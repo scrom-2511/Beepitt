@@ -4,5 +4,5 @@ import { signin } from "../controllers/Signin.Controller";
 
 export const userRouter = Router();
 
-userRouter.post("/signup", (req: Request, res: Response) => { signup(req, res) })
-userRouter.post("/signin", (req: Request, res: Response) => { signin(req, res) })
+userRouter.post("/signup", signup)
+userRouter.post("/signin", signin)

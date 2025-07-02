@@ -1,34 +1,44 @@
 import { Request, Response } from "express";
-import { User } from "../models/User.model";
+import { User } from "../models/User.Model";
 import { verifyPassword } from "../utilities/PasswordHasher.Utility";
 import { SigninType } from "../types/Auth.Type";
 import dotenv from "dotenv";
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
 
 dotenv.config();
 
 const jwt_secret = process.env.JWT_SECRET!;
 
-export const signin = async (
-  req: Request,
-  res: Response
-) => {
-  const validateData = SigninType.safeParse(req.body);
-  if (!validateData.success)
-    return res.json({ message: "Enter the values properly." });
+export const signin = async (req: Request, res: Response) => {
+  try {
+    const validateData = SigninType.safeParse(req.body);
+    if (!validateData.success) {
+      res.json({ message: "Enter the values properly.", success: false });
+      return;
+    }
 
-  const user = await User.findOne({ email: validateData.data.email });
-  if (!user || !user.password)
-    return res.json({ message: "There is no user with these email" });
-  else if (!(await verifyPassword(validateData.data.password, user.password)))
-    return res.json({ message: "Enter the correct password!" });
+    const user = await User.findOne({ email: validateData.data.email });
+    if (!user || !user.password) {
+      res.json({ message: "There is no user with these email", success: false });
+      return;
+    } else if (
+      !(await verifyPassword(validateData.data.password, user.password))
+    ) {
+      res.json({ message: "Enter the correct password!", success: false });
+      return;
+    }
 
-  const userId = user.id;
-  const token = jwt.sign({ userId }, jwt_secret);
-  return res
-    .cookie("token", token, {
-      httpOnly: true,
-      sameSite: "strict",
-    })
-    .json({ message: "Signin successfull", success: true });
+    const userId = user.id;
+    const token = jwt.sign({ userId }, jwt_secret);
+    res
+      .cookie("token", token, {
+        httpOnly: true,
+        sameSite: "strict",
+      })
+      .json({ message: "Signin successfull", success: true, token });
+    return;
+  } catch (error) {
+    console.error(error);
+    res.json({message: "Internal Server Error!", success: false})
+  }
 };
