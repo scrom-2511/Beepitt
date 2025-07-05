@@ -1,24 +1,18 @@
+import { useSelector } from "react-redux"
 import NavigationBar from "../components/NavigationBar"
+import { selectUser } from "../features/user/userSlice"
 
 const Dashboard = () => {
+  const username = useSelector(selectUser)
   return (
     <div className="h-full w-full">
       <NavigationBar position="static" />
       <div className="h-[calc(100%-100px)] w-full relative">
-        <div className="h-[70%] w-[80px] bg-third fixed top-1/2 transform -translate-y-1/2 rounded-2xl overflow-hidden">
-          <div className="h-[70px] w-[70px] bg-secondary rounded-full blur-[90px] absolute top-1/2 transform -translate-y-1/2"></div>
-        </div>
-        <div className="h-full w-[calc(100%-80px)] absolute right-0">
-          <h1 className="font-mainheading font-extrabold bg-gradient-to-b from-white to-[#9A9A9A] bg-clip-text text-transparent text-4xl pl-20">NAME'S DASHBOARD</h1>
+        <div className="h-full w-full absolute right-0">
+          <h1 className="font-mainheading font-extrabold bg-gradient-to-b from-white to-[#9A9A9A] bg-clip-text text-transparent text-4xl pl-20">{username + "'s"+ " DASHBOARD"}</h1>
           <div className="h-[calc(100%-100px)] w-full overflow-y-scroll mt-10">
-            <UnsolvedError />
-            <UnsolvedError />
-            <UnsolvedError />
-            <SolvedError />
-            <SolvedError />
-            <SolvedError />
-            <SolvedError />
-            <SolvedError />
+            <UnsolvedError/>
+            <SolvedError/>
           </div>
         </div>
       </div>
