@@ -3,7 +3,7 @@ import NavigationBar from "../components/NavigationBar"
 const Home = () => {
     return (
         <div className="h-[500px] w-full">
-            <NavigationBar position="relative"/>
+            <NavigationBar position="static"/>
             <div className="h-[400px] w-full flex justify-center items-center relative top-20 z-10">
                 <img src="/images/bg.svg" alt="" className="h-120 opacity-30 mb-7 absolute" />
                 <div className="flex flex-col items-center absolute text-2xl text-black">
