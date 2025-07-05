@@ -4,7 +4,8 @@ import type { RootState } from "../../app/store";
 interface ErrMsg{
     id:string;
     errName:string;
-    time:string
+    time:string;
+    solved:boolean;
 }
 
 interface ErrMsgsState{
@@ -12,7 +13,7 @@ interface ErrMsgsState{
 }
 
 const initialState: ErrMsgsState = {
-    messages : [{id:"", errName:"", time:""},]
+    messages : [{id:"", errName:"", time:"", solved:false},]
 }
 
 export const ErrMsgsSlice = createSlice({
@@ -30,6 +31,6 @@ export const ErrMsgsSlice = createSlice({
 
 export const {setErrMsgs, addErrMsgs} = ErrMsgsSlice.actions
 
-export const selectErrMsgs = (state:RootState) => state.errMsgs
+export const selectErrMsgs = (state:RootState) => state.errMsgs.messages
 
 export default ErrMsgsSlice.reducer

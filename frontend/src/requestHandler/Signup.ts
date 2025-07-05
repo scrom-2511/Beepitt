@@ -1,5 +1,5 @@
 import axios from "axios"
-import type { ResponseInterface } from "../interfaces/ResponseInterfaces";
+import type { ResponseInterface } from "../interfaces/Response.Interfaces";
 
 export const signupHandler = async (data: object): Promise<ResponseInterface> => {
     try {
