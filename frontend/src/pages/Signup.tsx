@@ -1,11 +1,11 @@
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import NavigationBar from "../components/NavigationBar"
-import { setEmail, setPassword } from "../features/auth/authSlice"
+import { selectAuth, setEmail, setPassword } from "../features/auth/authSlice"
 import React, { useState } from "react"
-import { useAuth } from "../stateExport/stateExport"
 import { signupHandler } from "../requestHandler/Signup"
 import { useNavigate } from "react-router-dom"
 import { usernameUpdate } from "../requestHandler/UsernameUpdate"
+import { selectUser, setUsername } from "../features/user/userSlice"
 
 const Signup = () => {
   const [signUpComponentVisibility, setSignUpComponentVisibility] = useState<boolean>(true);
@@ -21,7 +21,8 @@ const Signup = () => {
 const SignupComponent = ({ setSignUpComponentVisibility }: { setSignUpComponentVisibility: React.Dispatch<React.SetStateAction<boolean>> }) => {
   const [errMsg, setErrMsg] = useState<{visible:boolean, message:string}>({visible:false, message:""});
   const dispatch = useDispatch();
-  const data = { ...useAuth() };
+  const {email, password} = useSelector(selectAuth);
+  const data = { email,password };
   const handleOnClickBtn = async () => {
     const {success, message} = await signupHandler(data);
     if (success) setSignUpComponentVisibility(false);
@@ -58,7 +59,9 @@ const UsernameUpdateComponent = () => {
   const [errMsg, setErrMsg] = useState<{visible:boolean, message:string}>({visible:false, message:""});
 
   const navigate = useNavigate();
-  const [username, setUsername] = useState<string>("");
+  const dispatch = useDispatch();
+
+  const username = useSelector(selectUser)
   const handleOnClickBtn = async ()=>{
     const {success, message} = await usernameUpdate({username})
     if (success) navigate("/dashboard");
@@ -69,7 +72,7 @@ const UsernameUpdateComponent = () => {
       <div className="h-[70px] w-[70px] bg-secondary rounded-full blur-[90px] absolute top-20 left-1/2 transform -translate-x-1/2 z-0"></div>
       <div className="h-full px-20 py-5 text-secondary flex flex-col justify-center items-center gap-5">
         <h1 className="font-roboto font-light text-lg text-secondary">What shall we call you?</h1>
-        <input type="text" placeholder="Enter your username" className="font-roboto font-light text-sm h-10 w-full border border-secondary rounded-[10px] p-5 z-10" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)} />
+        <input type="text" placeholder="Enter your username" className="font-roboto font-light text-sm h-10 w-full border border-secondary rounded-[10px] p-5 z-10" onChange={(e: React.ChangeEvent<HTMLInputElement>) => dispatch(setUsername((e.target.value)))} />
         <p className="font-roboto font-light text-sm text-center text-red-600" style={errMsg.visible === true? {display:"block"}:{display:"none"}}>{"Err:"+errMsg.message}</p>
         <button className="h-8 w-30 bg-gradient-to-b from-white to-[#9A9A9A] rounded-[7px] font-roboto font-extrabold text-[12px] main-btn text-third mt-2" onClick={handleOnClickBtn}>Let's Go!</button>
       </div>
