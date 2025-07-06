@@ -13,7 +13,7 @@ interface ErrMsgsState{
 }
 
 const initialState: ErrMsgsState = {
-    messages : [{id:"", errName:"", time:"", solved:false},]
+    messages : []
 }
 
 export const ErrMsgsSlice = createSlice({
