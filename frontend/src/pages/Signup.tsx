@@ -48,7 +48,7 @@ const SignupComponent = ({setComponent}:{setComponent:React.Dispatch<React.SetSt
           <h3 className="font-roboto font-extrabold text-sm">OR</h3>
           <div className="w-30 h-[1px] bg-secondary"></div>
         </div>
-        <input type="text" placeholder="Enter your password" className="font-roboto font-light text-sm h-10 w-full border border-secondary rounded-[10px] mb-8 p-5" onChange={(e: React.ChangeEvent<HTMLInputElement>) => dispatch(setEmail(e.target.value))} />
+        <input type="text" placeholder="Enter your email" className="font-roboto font-light text-sm h-10 w-full border border-secondary rounded-[10px] mb-8 p-5" onChange={(e: React.ChangeEvent<HTMLInputElement>) => dispatch(setEmail(e.target.value))} />
         <input type="text" placeholder="Enter your password" className="font-roboto font-light text-sm h-10 w-full border border-secondary rounded-[10px] mb-6 p-5" onChange={(e: React.ChangeEvent<HTMLInputElement>) => dispatch(setPassword(e.target.value))} />
         <p className="font-roboto font-light text-sm text-center mb-6 text-red-600" style={errMsg.visible === true? {visibility:"visible"}:{visibility:"hidden"}}>{"Err:"+errMsg.message}</p>
         <button className="h-7 w-30 bg-gradient-to-b from-white to-[#9A9A9A] rounded-[7px] font-roboto font-extrabold text-[12px] main-btn text-third" onClick={handleOnClickBtn} >SIGNUP</button>
