@@ -4,7 +4,7 @@ import { selectUser } from "../features/user/userSlice"
 import { selectErrMsgs, setErrMsgs } from "../features/errorMsgs/errMsgsSlice"
 import type { ErrMsgInterface, ErrMsgPropsInterface } from "../interfaces/ErrMsg.Interface"
 import { useEffect } from "react"
-import { errMsgFetch } from "../requestHandler/ErrMsgFetch"
+import { errMsgFetch } from "../requestHandler/ErrMsgFetch.ReqHandler"
 
 
 
