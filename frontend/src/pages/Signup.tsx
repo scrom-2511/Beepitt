@@ -3,10 +3,8 @@ import NavigationBar from "../components/NavigationBar"
 import { selectAuth, setEmail, setPassword } from "../features/auth/authSlice"
 import React, { useState } from "react"
 import { signupHandler } from "../requestHandler/Signup.ReqHandler"
-import { useNavigate } from "react-router-dom"
-import { usernameUpdate } from "../requestHandler/UsernameUpdate.ReqHandler"
-import { selectUser, setUsername } from "../features/user/userSlice"
 import { otpValidator } from "../requestHandler/OtpValidator.ReqHandler"
+import { useNavigate } from "react-router-dom"
 
 const Signup = () => {
   const [component, setComponent] = useState<number>(1);
@@ -15,7 +13,6 @@ const Signup = () => {
       <NavigationBar position="static" />
       {component === 1 && <SignupComponent setComponent={setComponent}/>}
       {component === 2 && <OtpInputComponent setComponent={setComponent} />}
-      {component === 3 && <UsernameUpdateComponent  />}
     </div>
   )
 }
@@ -60,10 +57,13 @@ const SignupComponent = ({setComponent}:{setComponent:React.Dispatch<React.SetSt
 const OtpInputComponent = ({setComponent}:{setComponent:React.Dispatch<React.SetStateAction<number>>}) => {
   const [errMsg, setErrMsg] = useState<{visible:boolean, message:string}>({visible:false, message:""});
   const [otp, setOtp] = useState<number>(0);
+  const {email} = useSelector(selectAuth);
+
+  const navigate = useNavigate()
 
   const handleOnClickBtn = async ()=>{
-    const {success, message} = await otpValidator({otp})
-    if (success) setComponent(3)
+    const {success, message} = await otpValidator({otp, email})
+    if (success) navigate("/signin")
     else setErrMsg({visible:true, message:message})
   }
   return (
@@ -72,31 +72,6 @@ const OtpInputComponent = ({setComponent}:{setComponent:React.Dispatch<React.Set
       <div className="h-full px-20 py-5 text-secondary flex flex-col justify-center items-center gap-5">
         <h1 className="font-roboto font-light text-lg text-secondary">Enter the otp sent to your mail</h1>
         <input type="text" placeholder="Enter the otp" className="font-roboto font-light text-sm h-10 w-full border border-secondary rounded-[10px] p-5 z-10" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setOtp((Number(e.target.value)))} />
-        <p className="font-roboto font-light text-sm text-center text-red-600" style={errMsg.visible === true? {display:"block"}:{display:"none"}}>{"Err:"+errMsg.message}</p>
-        <button className="h-8 w-30 bg-gradient-to-b from-white to-[#9A9A9A] rounded-[7px] font-roboto font-extrabold text-[12px] main-btn text-third mt-2" onClick={handleOnClickBtn}>Let's Go!</button>
-      </div>
-    </div>
-  )
-}
-
-const UsernameUpdateComponent = () => {
-  const [errMsg, setErrMsg] = useState<{visible:boolean, message:string}>({visible:false, message:""});
-
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-  const username = useSelector(selectUser)
-  const handleOnClickBtn = async ()=>{
-    const {success, message} = await usernameUpdate({username})
-    if (success) navigate("/dashboard");
-    else setErrMsg({visible:true, message:message})
-  }
-  return (
-    <div className="h-[250px] w-[500px] bg-third rounded-2xl absolute left-1/2 transform -translate-x-1/2 top-1/2 -translate-y-1/2">
-      <div className="h-[70px] w-[70px] bg-secondary rounded-full blur-[90px] absolute top-20 left-1/2 transform -translate-x-1/2 z-0"></div>
-      <div className="h-full px-20 py-5 text-secondary flex flex-col justify-center items-center gap-5">
-        <h1 className="font-roboto font-light text-lg text-secondary">What shall we call you?</h1>
-        <input type="text" placeholder="Enter your username" className="font-roboto font-light text-sm h-10 w-full border border-secondary rounded-[10px] p-5 z-10" onChange={(e: React.ChangeEvent<HTMLInputElement>) => dispatch(setUsername((e.target.value)))} />
         <p className="font-roboto font-light text-sm text-center text-red-600" style={errMsg.visible === true? {display:"block"}:{display:"none"}}>{"Err:"+errMsg.message}</p>
         <button className="h-8 w-30 bg-gradient-to-b from-white to-[#9A9A9A] rounded-[7px] font-roboto font-extrabold text-[12px] main-btn text-third mt-2" onClick={handleOnClickBtn}>Let's Go!</button>
       </div>
