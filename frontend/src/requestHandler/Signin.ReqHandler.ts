@@ -7,7 +7,9 @@ export interface SigninInterface extends ResponseInterface{
 
 export const signinHandler = async (data: object): Promise<SigninInterface | ResponseInterface> => {
     try {
-        const res = await axios.post("http://localhost:3000/user/signin", data);
+        const res = await axios.post("http://localhost:3000/user/signin", data, {
+            withCredentials: true
+        });
         if (res.data.success) {
             return { success: true, message: res.data.message, username: res.data.username }
         }
