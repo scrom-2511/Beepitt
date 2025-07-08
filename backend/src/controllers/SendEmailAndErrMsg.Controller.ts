@@ -6,7 +6,9 @@ import { ErrorMsgType } from "../types/ErrorMsg.Type";
 
 export const sendEmailAndErrMsg = async (req: Request, res: Response) => {
     try {
-        const { id, filePath, errObj } = req.body;
+        console.log(req.body)
+        const { userID } = req.body;
+        console.log(userID)
 
         const validateData = ErrorMsgType.safeParse(req.body);
         if (!validateData.success) {
@@ -15,8 +17,9 @@ export const sendEmailAndErrMsg = async (req: Request, res: Response) => {
             return;
         }
 
-        const user = await User.findById(id);
-        if (!user || !user.email) {
+        const user = await User.findById( userID );
+        console.log(userID)
+        if ( !user ) {
             res.status(404).json({ message: "User not found or missing email", success: false });
             return;
         }
@@ -24,8 +27,8 @@ export const sendEmailAndErrMsg = async (req: Request, res: Response) => {
         // const body = "<strong>hey</strong>";
         // await sendEmail(user.email, "Beepitt <onboarding@resend.dev>", filePath, body);
 
-        await ErrorMsg.create({ errObj, id, filePath }); // Adjust to match your schema
-
+        const newErrMsg = await ErrorMsg.create(validateData.data); 
+        console.log("Doneeeeeee!!!!!!!!")
         res.status(200).json({ message: "Email and error message handled successfully", success: true });
         return;
     } catch (error) {

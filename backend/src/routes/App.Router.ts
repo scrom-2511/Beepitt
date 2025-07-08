@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
-import { sendEmailAndErrMsg } from "../controllers/SendEmail.Controller";
 import { isLoggedIn } from "../middlewares/isLoggedIn";
+import { sendEmailAndErrMsg } from "../controllers/SendEmailAndErrMsg.Controller";
 
 export const appRouter = Router();
 
-appRouter.get("/err", isLoggedIn, sendEmailAndErrMsg)
+appRouter.post("/err", isLoggedIn, sendEmailAndErrMsg)

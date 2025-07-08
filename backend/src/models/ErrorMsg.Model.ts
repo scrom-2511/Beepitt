@@ -9,5 +9,6 @@ export const errMsgObjSchema = new mongoose.Schema({
 export const ErrorMsg = mongoose.model("ErrorMsg", new mongoose.Schema({
     userID: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     errMsgObj: { type: errMsgObjSchema },
-    filePath: { type: String }
-}))
+    filePath: { type: String },
+    solved: { type: Boolean }
+}, { timestamps: true }))
