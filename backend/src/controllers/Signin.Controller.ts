@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { User } from "../models/User.Model";
-import { verifyPassword } from "../utilities/PasswordHasher.Utility";
+import { verifyHashedData } from "../utilities/Hasher";
 import { SigninType } from "../types/Auth.Type";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
@@ -22,7 +22,7 @@ export const signin = async (req: Request, res: Response) => {
       res.json({ message: "There is no user with these email", success: false });
       return;
     } else if (
-      !(await verifyPassword(validateData.data.password, user.password))
+      !(await verifyHashedData(validateData.data.password, user.password))
     ) {
       res.json({ message: "Enter the correct password!", success: false });
       return;
