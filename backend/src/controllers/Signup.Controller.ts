@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import dotenv from "dotenv";
 import { SignupType } from "../types/Auth.Type";
 import { User } from "../models/User.Model";
@@ -6,17 +6,16 @@ import crypto from "crypto"
 import { Otp } from "../models/Otp.Model";
 import { hashData } from "../utilities/Hasher";
 import { OtpType } from "../types/Otp.Type";
+import { CustomReq } from "../interfaces/CustomReq.Interface";
 
 dotenv.config();
 
-export const signup = async ( req: Request, res: Response ) => {
+export const signup = async ( req: CustomReq, res: Response ) => {
   try {
     const validateData = SignupType.safeParse(req.body);
 
     if (!validateData.success) {
-      res.status(400).json({
-        message: validateData.error,
-      });
+      res.status(400).json({ message: "Please enter the values properly.", success: false});
       return;
     }
 
@@ -37,7 +36,7 @@ export const signup = async ( req: Request, res: Response ) => {
 
     const validateOtp = OtpType.safeParse({ otp, email })
     if ( !validateOtp.success ) {
-      res.status(400).json({ message: validateOtp.error, success: false });
+      res.status(400).json({ message: "Please enter the otp properly.", success: false });
       return;
     }
 
