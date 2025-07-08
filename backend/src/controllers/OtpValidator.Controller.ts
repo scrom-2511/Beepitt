@@ -1,7 +1,7 @@
 import { RequestHandler, Response } from "express";
 import { CustomReq } from "../interfaces/CustomReq.Interface";
 import { Otp } from "../models/Otp.Model";
-import { verifyHashedData } from "../utilities/Hasher.Utility";
+import { verifyHashedData } from "../utilities/Hasher";
 
 export const otpValidator: RequestHandler = async (req: CustomReq, res: Response) => {
     try {
@@ -11,7 +11,7 @@ export const otpValidator: RequestHandler = async (req: CustomReq, res: Response
             res.json({ message:"There is no user with this email", success: false })
             return
         }
-        const validateOtp = await verifyHashedData( otp, otpData.otp )
+        const validateOtp = await verifyHashedData( String(otp), otpData.otp )
         if( !validateOtp ){
             res.json({ message:"Otp you entered is wrong.", success: false })
             return

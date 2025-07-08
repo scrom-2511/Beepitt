@@ -5,6 +5,7 @@ import { User } from "../models/User.Model";
 import crypto from "crypto"
 import { Otp } from "../models/Otp.Model";
 import { hashData } from "../utilities/Hasher";
+import { OtpType } from "../types/Otp.Type";
 
 dotenv.config();
 
@@ -21,23 +22,29 @@ export const signup = async ( req: Request, res: Response ) => {
 
     const userExists = await User.findOne({ email: validateData.data.email });
     if (userExists) {
-      res.status(400).json({
-        message: "An account with this email already exists!",
-      });
+      res.status(400).json({ message: "An account with this email already exists!", success: false});
       return;
     }
 
-    const password = await hashData(validateData.data.password);
+    const password = await hashData( validateData.data.password );
 
     const { username, email } = validateData.data;
     const newUser = await User.create({ username, password, email });
-    const otp = crypto.randomInt(100000, 1000000);
-    console.log(otp)
-    const newOtp = await Otp.create({email, otp})
-    res
-      .status(201)
-      .json({ message: "Signup successfull", success: true });
+
+    const createOtp = crypto.randomInt(100000, 1000000);
+    const otp = await hashData(String(createOtp))
+    console.log(createOtp)
+
+    const validateOtp = OtpType.safeParse({ otp, email })
+    if ( !validateOtp.success ) {
+      res.status(400).json({ message: validateOtp.error, success: false });
       return;
+    }
+
+    const newOtp = await Otp.create(validateOtp.data)
+
+    res.status(201).json({ message: "Signup successfull", success: true });
+    return;
   } catch (error) {
     console.error("Signup error:", error);
     res.status(500).json({ error: "Internal server error" });

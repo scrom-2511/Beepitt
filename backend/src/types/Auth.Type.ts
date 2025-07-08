@@ -1,7 +1,7 @@
 import { string, z } from "zod";
 
 export const SignupType = z.object({
-  username: z.string(),
+  username: z.string().default(""),
   password: z.string(),
   email: z.string(),
 });
