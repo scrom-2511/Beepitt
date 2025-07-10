@@ -1,8 +1,18 @@
-export interface ErrMsgPropsInterface{
-    errName:string;
-    time:string;
+import type { Key } from "react";
+
+export interface ErrMsgObj{
+    errName: string;
+    errMsg: string;
+    errStack: string;
 }
-export interface ErrMsgInterface extends ErrMsgPropsInterface{
-    id:string;
-    solved:boolean;
+
+export interface ErrMsg{
+    _id: Key;
+    userID: string;
+    filePath: string;
+    solved: boolean;
+    errMsgObj: ErrMsgObj;
+    time: string;
+    createdAt: string;
+    note: string;
 }

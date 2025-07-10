@@ -1,11 +1,16 @@
-export interface emailsContactInterface{
+export interface EmailsContactInterface{
     primary:string;
     secondary:string;
     tertiary:string;
 }
 
-export interface phoneNumsContactInterface{
+export interface PhoneNumsContactInterface{
     primary:string;
     secondary:string;
     tertiary:string;
+}
+
+export interface FinalContacts{
+    emails: EmailsContactInterface;
+    phoneNums: PhoneNumsContactInterface
 }
