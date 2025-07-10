@@ -1,12 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../app/store";
-
-interface ErrMsg{
-    id:string;
-    errName:string;
-    time:string;
-    solved:boolean;
-}
+import type { ErrMsg } from "../../interfaces/ErrMsg.Interface";
 
 interface ErrMsgsState{
     messages: ErrMsg[]
@@ -29,7 +23,7 @@ export const ErrMsgsSlice = createSlice({
     }
 })
 
-export const {setErrMsgs, addErrMsgs} = ErrMsgsSlice.actions
+export const { setErrMsgs, addErrMsgs } = ErrMsgsSlice.actions
 
 export const selectErrMsgs = (state:RootState) => state.errMsgs.messages
 

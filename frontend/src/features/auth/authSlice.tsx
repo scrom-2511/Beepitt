@@ -1,12 +1,8 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../app/store";
+import type { Auth } from "../../interfaces/Auth.Interface";
 
-interface AuthState{
-  email:string;
-  password:string;
-}
-
-const initialState:AuthState = {
+const initialState: Auth = {
   email : "",
   password: ""
 }
