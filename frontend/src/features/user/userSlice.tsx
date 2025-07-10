@@ -1,11 +1,9 @@
 import  { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '../../app/store'
+import type { User } from '../../interfaces/User.Interface'
 
-interface UserState {
-  username: string
-}
 
-const initialState: UserState = {
+const initialState: User = {
   username: "(No Name)",
 }
 
