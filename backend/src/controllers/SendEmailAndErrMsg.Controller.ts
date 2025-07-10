@@ -3,11 +3,12 @@ import { User } from "../models/User.Model";
 import { sendEmail } from "../utilities/SendEmail.Utility";
 import { ErrorMsg } from "../models/ErrorMsg.Model";
 import { ErrorMsgType } from "../types/ErrorMsg.Type";
+import { CustomReq } from "../interfaces/CustomReq.Interface";
 
-export const sendEmailAndErrMsg = async (req: Request, res: Response) => {
+export const sendEmailAndErrMsg = async (req: CustomReq, res: Response) => {
     try {
         console.log(req.body)
-        const { userID } = req.body;
+        const userID = req.userID;;
         console.log(userID)
 
         const validateData = ErrorMsgType.safeParse(req.body);

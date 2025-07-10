@@ -2,12 +2,14 @@ import { Request, Response } from "express"
 import { User } from "../models/User.Model"
 import { ContactInfoType } from "../types/Auth.Type";
 import { Types } from "mongoose";
+import { CustomReq } from "../interfaces/CustomReq.Interface";
 
-export const updateContactInfo = async (req: Request, res: Response) => {
+export const updateContactInfo = async (req: CustomReq, res: Response) => {
     try {
         // console.log(req.body)
-        const { userID, emailIDs, phoneNums } = req.body
+        const { emailIDs, phoneNums } = req.body
         // console.log(emailIDs, phoneNums)
+        const userID = req.userID;
 
         const validateData = ContactInfoType.safeParse({emailIDs, phoneNums});
 

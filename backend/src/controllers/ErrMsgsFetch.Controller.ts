@@ -4,7 +4,7 @@ import { ErrorMsg } from "../models/ErrorMsg.Model";
 
 export const errMsgsFetch: RequestHandler = async (req: CustomReq, res: Response) => {
     try {
-        const { userID } = req.body;
+        const userID = req.userID;
         if(!userID){
             res.json({message:"UserID not available", success: false})
             return

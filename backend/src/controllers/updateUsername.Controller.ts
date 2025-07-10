@@ -4,7 +4,8 @@ import { User } from "../models/User.Model";
 
 export const updateUsername: RequestHandler = async (req: CustomReq, res: Response) => {
     try {
-        const { username, userID } = req.body;
+        const { username } = req.body;
+        const userID = req.userID;
 
         if ( !userID ) {
             console.log("UserID is not provided.")
