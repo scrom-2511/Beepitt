@@ -18,6 +18,9 @@ const NavigationBar = ({position}:{position:Position}) => {
       {buttons.map((btn, index)=>(
         <button key={index} className="button-navigation h-[70px]" onClick={() => navigate(`/${btn.navigate}`)}>{ btn.key }</button>
       ))}
+        <button className="button-navigation h-[70px]" onClick={() => navigate("/settings")}>
+          <img src="/images/settings.png" alt="" className="h-6" />
+        </button>
       </div>
     </div>
   )
