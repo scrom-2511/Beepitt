@@ -4,7 +4,7 @@ import { selectAuth, setEmail, setPassword } from "../features/auth/authSlice"
 import React, { useState } from "react"
 import { signinHandler } from "../requestHandler/Signin.ReqHandler"
 import { useNavigate } from "react-router-dom"
-import { selectUser, setUsername } from "../features/user/userSlice"
+import { selectUsername, setUsername } from "../features/user/userSlice"
 import { usernameUpdate } from "../requestHandler/UsernameUpdate.ReqHandler"
 
 const Signin = () => {
@@ -73,7 +73,7 @@ const UsernameUpdateComponent = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const username = useSelector(selectUser)
+    const username = useSelector(selectUsername)
     const handleOnClickBtn = async () => {
         const { success, message } = await usernameUpdate({ username })
         if (success) {

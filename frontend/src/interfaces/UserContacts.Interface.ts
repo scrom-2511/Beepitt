@@ -11,6 +11,6 @@ export interface PhoneNumsContactInterface{
 }
 
 export interface FinalContacts{
-    emails: EmailsContactInterface;
+    emailIDs: EmailsContactInterface;
     phoneNums: PhoneNumsContactInterface
 }

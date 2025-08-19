@@ -1,9 +1,11 @@
 import { RequestHandler, Response } from "express";
 import { CustomReq } from "../interfaces/CustomReq.Interface";
 import { User } from "../models/User.Model";
+import { Settings } from "../models/Settings.model";
 
 export const updateUsername: RequestHandler = async (req: CustomReq, res: Response) => {
     try {
+        console.log(req.userID)
         const { username } = req.body;
         const userID = req.userID;
 
@@ -23,6 +25,8 @@ export const updateUsername: RequestHandler = async (req: CustomReq, res: Respon
             res.json({ message: "User with this email does not exist.", success: false })
             return;
         }
+
+        const settings = await Settings.findOneAndUpdate({ userID }, { username })
 
         res.json({ message: "Username updated successfully!", success: true })
         return;

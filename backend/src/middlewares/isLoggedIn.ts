@@ -6,8 +6,8 @@ const jwtSecret = process.env.JWT_SECRET;
 
 export const isLoggedIn: RequestHandler = (req: CustomReq, res: Response, next: NextFunction) => {
     try {
-        console.log("Camer htere")
-        console.log(req.cookies)
+        // console.log("Camer htere")
+        // console.log(req.cookies)
         if (!jwtSecret) {
             console.error("JWT_SECRET not set");
             res.status(500).json({ message: "Server error", success: false });
@@ -15,7 +15,7 @@ export const isLoggedIn: RequestHandler = (req: CustomReq, res: Response, next: 
         }
 
         const { token } = req.cookies;
-        console.log("Token is ", token)
+        // console.log("Token is ", token)
 
         if ( !token ) {
             console.log("Token required")

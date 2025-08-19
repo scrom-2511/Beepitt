@@ -1,12 +1,13 @@
 @import "tailwindcss";
 
 @theme{
-    --color-primary: #141414;
+    --color-primary: #000000;
     --color-secondary: #D7D7D7;
-    --color-third: #1F1F1F;
+    --color-third: #191919;
     --color-fourth: #CACACA;
     --font-mainheading: "Kanit", sans-serif;
     --font-titlemain: "Montserrat", sans-serif;
+    --font-secondmain: "Inter", sans-serif;
     --font-roboto: "Roboto", sans-serif;
     --font-roboto-flex: "Roboto Flex", sans-serif;
     --shadow-mainButton :"0px_0px_10px_5px_rgba";

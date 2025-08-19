@@ -10,22 +10,24 @@ import { CustomReq } from "../interfaces/CustomReq.Interface";
 
 dotenv.config();
 
-export const signup = async ( req: CustomReq, res: Response ) => {
+export const signup = async (req: CustomReq, res: Response) => {
   try {
     const validateData = SignupType.safeParse(req.body);
 
     if (!validateData.success) {
-      res.status(400).json({ message: "Please enter the values properly.", success: false});
+      console.log(validateData.error)
+
+      res.status(400).json({ message: "Please enter the values properly.", success: false });
       return;
     }
 
     const userExists = await User.findOne({ email: validateData.data.email });
     if (userExists) {
-      res.status(400).json({ message: "An account with this email already exists!", success: false});
+      res.status(400).json({ message: "An account with this email already exists!", success: false });
       return;
     }
 
-    const password = await hashData( validateData.data.password );
+    const password = await hashData(validateData.data.password);
 
     const { username, email } = validateData.data;
     const newUser = await User.create({ username, password, email });
@@ -35,7 +37,7 @@ export const signup = async ( req: CustomReq, res: Response ) => {
     console.log(createOtp)
 
     const validateOtp = OtpType.safeParse({ otp, email })
-    if ( !validateOtp.success ) {
+    if (!validateOtp.success) {
       res.status(400).json({ message: "Please enter the otp properly.", success: false });
       return;
     }

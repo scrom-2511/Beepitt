@@ -5,13 +5,13 @@ import storage from 'redux-persist/lib/storage'
 import authReducer from '../features/auth/authSlice'
 import userReducer from '../features/user/userSlice'
 import errMsgReducer from "../features/errorMsgs/errMsgsSlice"
-import userContactReducer from '../features/userContact/userContactSlice'
+import userContactReducer from '../features/userContact/userContactInfoSlice'
 
 const rootReducer = combineReducers({
   auth: authReducer,
     user: userReducer,
     errMsgs: errMsgReducer,
-    userContact : userContactReducer
+    userContactInfo : userContactReducer
 })
 
 const persistConfig = {

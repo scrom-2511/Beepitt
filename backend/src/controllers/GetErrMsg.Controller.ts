@@ -4,16 +4,7 @@ import { ErrorMsg } from "../models/ErrorMsg.Model";
 
 export const getErrMsg: RequestHandler = async (req: CustomReq, res: Response) => {
     try {
-        console.log("yaha aaya")
-        console.log(req.params)
-        const userID = req.userID;
         const { errMsgID } = req.params;
-
-        if (!userID) {
-            console.log("userID is not present.")
-            res.json({ message: "There was some problem. Please login again.", success: false })
-            return;
-        }
 
         if (!errMsgID) {
             console.log("errMsgID is not present.")
@@ -21,7 +12,7 @@ export const getErrMsg: RequestHandler = async (req: CustomReq, res: Response) =
             return;
         }
 
-        const errMsg = await ErrorMsg.findById(errMsgID);
+        const errMsg = await ErrorMsg.findById( errMsgID );
         if (!errMsg) {
             console.log("There is no errMsg with this ID.")
             res.json({ message: "There is not err message.", success: false })

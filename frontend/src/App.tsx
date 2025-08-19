@@ -18,7 +18,7 @@ function App() {
           <Route path="/signin" element={<Signin />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          <Route path="/errDetails/:msgID" element={<ProtectedRoute><ErrorDetails /></ProtectedRoute>} />
+          <Route path="/errDetails/:errMsgID" element={<ProtectedRoute><ErrorDetails /></ProtectedRoute>} />
           <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
         </Routes>
       </div>

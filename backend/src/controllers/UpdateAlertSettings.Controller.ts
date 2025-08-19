@@ -1,27 +1,24 @@
 import { RequestHandler, Response } from "express";
 import { CustomReq } from "../interfaces/CustomReq.Interface";
-import { User } from "../models/User.Model";
-import { ContactInfoType } from "../types/Auth.Type";
 import { Settings } from "../models/Settings.model";
+import { AlertSettingsType } from "../types/Settings.Type";
 
-export const updateContactInfo: RequestHandler = async(req: CustomReq, res: Response) => {
+export const updateAlertSettings: RequestHandler = async(req: CustomReq, res: Response) => {
     try {
-        console.log(req.userID)
-        const contactInfo = req.body;
-        console.log(contactInfo)
+        console.log(req.body)
         const userID = req.userID as string;
 
         if ( !userID ) {
             console.log("UserID is not provided.")
             res.json({ message: "Please login again and try.", success: false })
             return;
-        } else if ( !contactInfo ) {
-            console.log("ContactInfo not provided.")
-            res.json({ message: "Please provide the contact info properly.", success: false })
+        } else if ( !req.body ) {
+            console.log("AlertPause not provided.")
+            res.json({ message: "Please provide the info properly.", success: false })
             return;
         }
 
-        const validateData = ContactInfoType.safeParse(contactInfo);
+        const validateData = AlertSettingsType.safeParse(req.body);
         if (!validateData.success) {
             console.log(validateData.error)
       
@@ -29,14 +26,14 @@ export const updateContactInfo: RequestHandler = async(req: CustomReq, res: Resp
             return;
           }
 
-        const user = await Settings.findOneAndUpdate({ userID }, { contactInfo })
+        const user = await Settings.findOneAndUpdate({ userID }, validateData.data)
         if (!user) {
             console.log("User with this email does not exist.")
             res.json({ message: "User with this email does not exist.", success: false })
             return;
         }
 
-        res.json({ message: "Contact Info updated successfully!", success: true })
+        res.json({ message: "Alert Pause Info updated successfully!", success: true })
         return;
     } catch (error) {
         console.log(error)

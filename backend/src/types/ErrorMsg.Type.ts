@@ -8,5 +8,6 @@ export const ErrorMsgType = z.object({
     errStack: z.string()
   }),
   filePath: z.string(),
-  solved: z.boolean().default(false)
+  solved: z.boolean().default(false),
+  aiRecommendation: z.string().default("")
 });

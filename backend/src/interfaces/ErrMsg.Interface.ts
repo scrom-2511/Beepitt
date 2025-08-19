@@ -1,23 +1,17 @@
-import type { Key } from "react";
-
 export interface ErrMsgObj{
     errName: string;
     errMsg: string;
     errStack: string;
 }
 
-export interface AiRecommendation{
-    theCause: string;
-    theSolution: string;
-}
-
 export interface ErrMsg{
-    _id: Key;
+    _id: string;
     userID: string;
     filePath: string;
     solved: boolean;
     errMsgObj: ErrMsgObj;
-    time: string;
+    time?: string;
     createdAt: string;
-    aiRecommendation: AiRecommendation;
+    note?: string;
+    aiRecommendation: string;
 }

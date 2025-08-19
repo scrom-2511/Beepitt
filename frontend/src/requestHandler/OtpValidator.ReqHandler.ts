@@ -8,6 +8,6 @@ export const otpValidator = async(data:object) => {
     }
     return {success:false, message:res.data.message}
     } catch (error) {
-    return {success:false, message:"There was an error, please try again."}
+    return {success:false, message:error}
     }
 }

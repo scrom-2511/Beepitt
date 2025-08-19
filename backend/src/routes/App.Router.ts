@@ -4,4 +4,4 @@ import { sendEmailAndErrMsg } from "../controllers/SendEmailAndErrMsg.Controller
 
 export const appRouter = Router();
 
-appRouter.post("/err", isLoggedIn, sendEmailAndErrMsg)
+appRouter.post("/err", sendEmailAndErrMsg)
