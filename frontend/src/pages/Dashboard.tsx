@@ -1,4 +1,5 @@
 import { AppSidebar } from "@/components/app-sidebar";
+import ButtonComp from "@/components/ButtonComp";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 const Dashboard = () => {
@@ -7,6 +8,7 @@ const Dashboard = () => {
       <AppSidebar />
       <div className="bg-background w-full h-full rounded-2xl">
         <TopBar />
+        <FilterSection />
       </div>
     </SidebarProvider>
   );
@@ -23,5 +25,27 @@ const TopBar = () => {
       </div>
       <div className="border border-foreground opacity-25"></div>
     </>
+  );
+};
+
+const filters_items = [
+  { title: "Critical", color: "bg-red-600" },
+  { title: "High", color: "bg-red-500" },
+  { title: "Low", color: "bg-yellow-600" },
+];
+
+const FilterSection = () => {
+  return (
+    <section className="w-full flex">
+      <div className="w-96 flex gap-2 p-5">
+        {filters_items.map((item) => (
+          <ButtonComp variant={"outline"} className="text-foreground w-full cursor-pointer p-0 h-8">
+            <div className={`h-2 w-2 rounded-full ${item.color}`}></div>
+            {item.title}
+          </ButtonComp>
+        ))}
+      </div>
+      <div>Search</div>
+    </section>
   );
 };
