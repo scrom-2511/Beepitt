@@ -141,7 +141,7 @@ const ErrorCardsSection = () => {
               <CardDescription className="text-foreground p-0 m-0">
                 Error Fixed At:{" "}
               </CardDescription>
-              <CardContent className="p-0 font-semibold text-sm flex flex-row gap-2 w-full my-2">
+              <CardContent className="p-0 font-semibold text-sm flex flex-row gap-2 w-full my-2 mb-6">
                 <Button variant={"outline"} className="flex-1">
                   {item.date}
                 </Button>
