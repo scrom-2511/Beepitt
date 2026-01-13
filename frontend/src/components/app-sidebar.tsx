@@ -15,7 +15,7 @@ import {
   SidebarMenu,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { useState } from "react";
+import React, { useState } from "react";
 import ButtonComp from "./ButtonComp";
 
 const items = [
@@ -54,7 +54,9 @@ export function AppSidebar() {
               <ButtonComp
                 variant={selected === item.title ? "default" : "ghost"}
                 className="flex flex-row w-full justify-start gap-5 text-md cursor-pointer"
-                onClick={()=> {setSelected(item.title); console.log("hi there i am clicked")}}
+                onClick={() => {
+                  setSelected(item.title);
+                }}
               >
                 <item.icon className="size-4.5" />
                 {item.title}
@@ -63,20 +65,29 @@ export function AppSidebar() {
           ))}
         </SidebarMenu>
       </SidebarContent>
-      <SideBarFooterComp />
+      <SideBarFooterComp selected={selected} setSelected={setSelected} />
     </Sidebar>
   );
 }
 
-const SideBarFooterComp = () => {
+const SideBarFooterComp = ({
+  selected,
+  setSelected,
+}: {
+  selected: string;
+  setSelected: React.Dispatch<React.SetStateAction<string>>;
+}) => {
   return (
     <SidebarFooter>
       <SidebarMenu className="gap-2.5">
         {items_footer.map((item) => (
           <SidebarMenuItem>
             <ButtonComp
-              variant={item.title === "Log Out" ? "destructive" : "ghost"}
+              variant={selected === item.title ? "default" : "ghost"}
               className="flex flex-row w-full justify-start gap-5 text-md cursor-pointer"
+              onClick={() => {
+                setSelected(item.title);
+              }}
             >
               <item.icon className="size-4.5" />
               {item.title}
