@@ -54,6 +54,7 @@ export function AppSidebar() {
               <ButtonComp
                 variant={selected === item.title ? "default" : "ghost"}
                 className="flex flex-row w-full justify-start gap-5 text-md cursor-pointer"
+                onClick={()=> {setSelected(item.title); console.log("hi there i am clicked")}}
               >
                 <item.icon className="size-4.5" />
                 {item.title}
