@@ -1,5 +1,6 @@
 import { AppSidebar } from "@/components/app-sidebar";
 import ButtonComp from "@/components/ButtonComp";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { CircleX } from "lucide-react";
 import { useState } from "react";
@@ -8,10 +9,10 @@ const Dashboard = () => {
   return (
     <SidebarProvider className="h-full w-full p-5">
       <AppSidebar />
-      <div className="bg-background w-full h-full rounded-2xl">
+      <ScrollArea className="bg-background w-full h-full rounded-2xl pb-5">
         <TopBar />
         <FilterSection />
-      </div>
+      </ScrollArea>
     </SidebarProvider>
   );
 };
@@ -68,3 +69,5 @@ const FilterSection = () => {
     </section>
   );
 };
+
+
