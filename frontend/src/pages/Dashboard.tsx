@@ -1,6 +1,8 @@
 import { AppSidebar } from "@/components/app-sidebar";
 import ButtonComp from "@/components/ButtonComp";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { CircleX } from "lucide-react";
+import { useState } from "react";
 
 const Dashboard = () => {
   return (
@@ -35,17 +37,34 @@ const filters_items = [
 ];
 
 const FilterSection = () => {
+  const [selected, setSelected] = useState<string>();
   return (
     <section className="w-full flex">
-      <div className="w-96 flex gap-2 p-5">
+      <div className="w-130 flex gap-2 p-5">
         {filters_items.map((item) => (
-          <ButtonComp variant={"outline"} className="text-foreground w-full cursor-pointer p-0 h-8">
+          <ButtonComp
+            variant={"outline"}
+            className={`flex-1 text-foreground w-full cursor-pointer p-0 h-8 ${
+              item.title === selected ? "w-48" : ""
+            }`}
+            onClick={() =>
+              setSelected((prev) => (item.title === prev ? "" : item.title))
+            }
+          >
             <div className={`h-2 w-2 rounded-full ${item.color}`}></div>
             {item.title}
+            {selected === item.title && (
+              <CircleX
+                className="ml-2 size-3.5"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelected("");
+                }}
+              />
+            )}
           </ButtonComp>
         ))}
       </div>
-      <div>Search</div>
     </section>
   );
 };
