@@ -1,5 +1,6 @@
 import { CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@radix-ui/react-label";
 
@@ -45,7 +46,9 @@ export default Settings;
 const Profile = () => {
   return (
     <section>
-      <div className="w-full h-40 rounded-2xl grid grid-cols-[400px_auto]">
+      <Separator/>
+
+      <div className="w-full h-auto rounded-2xl grid grid-cols-[400px_auto]">
         <div className="flex flex-col h-full w-full p-10">
           <h1 className="text-foreground text-xl mb-2">Profile</h1>
           <p className="text-muted-foreground text-sm">
@@ -55,7 +58,7 @@ const Profile = () => {
         <div>
           <CardContent className="p-10">
             <form>
-              <div className="flex flex-col gap-6 text-foreground text-sm">
+              <div className="flex flex-col gap-6 text-muted-foreground text-sm">
                 {/* First and Last Name */}
                 <div className="flex w-full gap-5">
                   <div className="grid gap-2 flex-1">
@@ -65,7 +68,7 @@ const Profile = () => {
                       type="text"
                       placeholder="First Name"
                       required
-                      className="py-6"
+                      className="py-6 text-foreground"
                     />
                   </div>
 
@@ -76,11 +79,12 @@ const Profile = () => {
                       type="text"
                       placeholder="Last Name"
                       required
-                      className="py-6"
+                      className="py-6 text-foreground"
                     />
                   </div>
                 </div>
 
+                {/* Username */}
                 <div className="grid gap-2">
                   <Label htmlFor="username">Email</Label>
                   <Input
@@ -88,10 +92,11 @@ const Profile = () => {
                     type="text"
                     placeholder="Username"
                     required
-                    className="py-6"
+                    className="py-6 text-foreground"
                   />
                 </div>
 
+                {/* Email */}
                 <div className="grid gap-2">
                   <Label htmlFor="email">Email</Label>
                   <Input
@@ -99,7 +104,8 @@ const Profile = () => {
                     type="email"
                     placeholder="m@example.com"
                     required
-                    className="py-6"
+                    value={"something"}
+                    className="py-6 text-foreground"
                   />
                 </div>
               </div>
@@ -107,6 +113,71 @@ const Profile = () => {
           </CardContent>
         </div>
       </div>
+
+      <Separator/>
+
+      {/* TimeZone And Preferences */}
+      <div className="w-full h-40 rounded-2xl grid grid-cols-[400px_auto]">
+        <div className="flex flex-col h-full w-full p-10">
+          <h1 className="text-foreground text-xl mb-2">
+            Timezone And Preferences
+          </h1>
+          <p className="text-muted-foreground text-sm">
+            Set your timezone and format
+          </p>
+        </div>
+        <div>
+          <CardContent className="p-10">
+            <form>
+              <div className="flex flex-col gap-6 text-muted-foreground text-sm">
+                <div className="flex w-full gap-5">
+                  {/* City */}
+                  <div className="grid gap-2 flex-1">
+                    <Label htmlFor="city">City</Label>
+                    <Input
+                      id="city"
+                      type="text"
+                      placeholder="Enter your city"
+                      required
+                      className="py-6 text-foreground"
+                    />
+                  </div>
+
+                  {/* Timezone */}
+                  <div className="grid gap-2 flex-1">
+                    <Label htmlFor="timezone">Timezone</Label>
+                    <Input
+                      id="timezone"
+                      type="text"
+                      placeholder="e.g. UTC, GMT+1, America/New_York"
+                      required
+                      className="py-6 text-foreground"
+                    />
+                  </div>
+
+                  {/* Date Format */}
+                  <div className="grid gap-2 flex-1">
+                    <Label htmlFor="dateTimeFormat">Date & Time Format</Label>
+                    <Input
+                      id="dateTimeFormat"
+                      type="text"
+                      placeholder="e.g. DD/MM/YYYY HH:mm"
+                      required
+                      className="py-6 text-foreground"
+                    />
+                  </div>
+                </div>
+              </div>
+            </form>
+          </CardContent>
+        </div>
+      </div>
+
+
+      <Separator/>
+
+
+
     </section>
   );
 };
