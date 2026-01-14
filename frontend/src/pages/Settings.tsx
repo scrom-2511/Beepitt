@@ -1,8 +1,11 @@
+import ButtonComp from "@/components/ButtonComp";
 import { CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@radix-ui/react-label";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 
 const tabItems = [
   { label: "Profile", value: "profile" },
@@ -14,7 +17,7 @@ const tabItems = [
 const Settings = () => {
   return (
     <section className="flex w-full">
-      <Tabs defaultValue="account" className="w-full p-5">
+      <Tabs defaultValue="profile" className="w-full p-5">
         <TabsList className="w-1/2 mb-5">
           {tabItems.map((item) => (
             <TabsTrigger key={item.value} value={item.value} className="h-10">
@@ -24,7 +27,7 @@ const Settings = () => {
         </TabsList>
 
         <TabsContent value="profile">
-          <Profile />
+          <ProfileSection />
         </TabsContent>
 
         <TabsContent value="account">
@@ -43,12 +46,24 @@ const Settings = () => {
 
 export default Settings;
 
-const Profile = () => {
+const ProfileSection = () => {
+  const [dataChangedProfile, setDataChangedProfile] = useState(false);
+  const [dataChangedTimezone, setDataChangedTimezone] = useState(false);
+
+  // These refs will allow SaveButton to trigger form submission
+  const [profileSubmit, setProfileSubmit] = useState<() => void>(
+    () => () => {}
+  );
+  const [timezoneSubmit, setTimezoneSubmit] = useState<() => void>(
+    () => () => {}
+  );
+
   return (
     <section>
-      <Separator/>
+      <Separator />
 
-      <div className="w-full h-auto rounded-2xl grid grid-cols-[400px_auto]">
+      {/* Profile Form Section */}
+      <div className="w-full h-auto rounded-2xl grid grid-cols-[400px_auto] mb-5">
         <div className="flex flex-col h-full w-full p-10">
           <h1 className="text-foreground text-xl mb-2">Profile</h1>
           <p className="text-muted-foreground text-sm">
@@ -57,70 +72,22 @@ const Profile = () => {
         </div>
         <div>
           <CardContent className="p-10">
-            <form>
-              <div className="flex flex-col gap-6 text-muted-foreground text-sm">
-                {/* First and Last Name */}
-                <div className="flex w-full gap-5">
-                  <div className="grid gap-2 flex-1">
-                    <Label htmlFor="firstName">First Name</Label>
-                    <Input
-                      id="firstName"
-                      type="text"
-                      placeholder="First Name"
-                      required
-                      className="py-6 text-foreground"
-                    />
-                  </div>
-
-                  <div className="grid gap-2 flex-1">
-                    <Label htmlFor="lastName">Last Name</Label>
-                    <Input
-                      id="lastName"
-                      type="text"
-                      placeholder="Last Name"
-                      required
-                      className="py-6 text-foreground"
-                    />
-                  </div>
-                </div>
-
-                {/* Username */}
-                <div className="grid gap-2">
-                  <Label htmlFor="username">Email</Label>
-                  <Input
-                    id="username"
-                    type="text"
-                    placeholder="Username"
-                    required
-                    className="py-6 text-foreground"
-                  />
-                </div>
-
-                {/* Email */}
-                <div className="grid gap-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="m@example.com"
-                    required
-                    value={"something"}
-                    className="py-6 text-foreground"
-                  />
-                </div>
-              </div>
-            </form>
+            <ProfileForm
+              onDataChange={setDataChangedProfile}
+              setSubmitFn={setProfileSubmit}
+            />
           </CardContent>
         </div>
+        {dataChangedProfile && <SaveButton onClick={profileSubmit} />}
       </div>
 
-      <Separator/>
+      <Separator />
 
-      {/* TimeZone And Preferences */}
+      {/* Timezone & Preferences Section */}
       <div className="w-full h-40 rounded-2xl grid grid-cols-[400px_auto]">
         <div className="flex flex-col h-full w-full p-10">
           <h1 className="text-foreground text-xl mb-2">
-            Timezone And Preferences
+            Timezone & Preferences
           </h1>
           <p className="text-muted-foreground text-sm">
             Set your timezone and format
@@ -128,56 +95,198 @@ const Profile = () => {
         </div>
         <div>
           <CardContent className="p-10">
-            <form>
-              <div className="flex flex-col gap-6 text-muted-foreground text-sm">
-                <div className="flex w-full gap-5">
-                  {/* City */}
-                  <div className="grid gap-2 flex-1">
-                    <Label htmlFor="city">City</Label>
-                    <Input
-                      id="city"
-                      type="text"
-                      placeholder="Enter your city"
-                      required
-                      className="py-6 text-foreground"
-                    />
-                  </div>
-
-                  {/* Timezone */}
-                  <div className="grid gap-2 flex-1">
-                    <Label htmlFor="timezone">Timezone</Label>
-                    <Input
-                      id="timezone"
-                      type="text"
-                      placeholder="e.g. UTC, GMT+1, America/New_York"
-                      required
-                      className="py-6 text-foreground"
-                    />
-                  </div>
-
-                  {/* Date Format */}
-                  <div className="grid gap-2 flex-1">
-                    <Label htmlFor="dateTimeFormat">Date & Time Format</Label>
-                    <Input
-                      id="dateTimeFormat"
-                      type="text"
-                      placeholder="e.g. DD/MM/YYYY HH:mm"
-                      required
-                      className="py-6 text-foreground"
-                    />
-                  </div>
-                </div>
-              </div>
-            </form>
+            <TimezonePreferencesForm
+              onDataChange={setDataChangedTimezone}
+              setSubmitFn={setTimezoneSubmit}
+            />
           </CardContent>
         </div>
+        {dataChangedTimezone && <SaveButton onClick={timezoneSubmit} />}
       </div>
-
-
-      <Separator/>
-
-
-
     </section>
+  );
+};
+
+type ProfileFormValues = {
+  firstName: string;
+  lastName: string;
+  username: string;
+  email: string;
+};
+
+interface ProfileFormProps {
+  onDataChange?: (changed: boolean) => void;
+  setSubmitFn?: (submitFn: () => void) => void;
+}
+
+export const ProfileForm = ({
+  onDataChange,
+  setSubmitFn,
+}: ProfileFormProps) => {
+  const form = useForm<ProfileFormValues>({
+    defaultValues: { email: "something" },
+  });
+
+  const { register, handleSubmit, formState } = form;
+
+  const onSubmit = (data: ProfileFormValues) => {
+    console.log("Profile Data:", data);
+    onDataChange?.(false);
+  };
+
+  // Expose submit function to parent SaveButton
+
+  useEffect(() => {
+    if (!setSubmitFn) return;
+
+    setSubmitFn(() => handleSubmit(onSubmit));
+  }, [handleSubmit, onSubmit, setSubmitFn]);
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div className="flex flex-col gap-6 text-muted-foreground text-sm">
+        <div className="flex w-full gap-5">
+          <div className="grid gap-2 flex-1">
+            <Label htmlFor="firstName">First Name</Label>
+            <Input
+              id="firstName"
+              placeholder="First Name"
+              className="py-6 text-foreground"
+              {...register("firstName", { required: "First name is required" })}
+              onChange={() => onDataChange?.(true)}
+            />
+          </div>
+
+          <div className="grid gap-2 flex-1">
+            <Label htmlFor="lastName">Last Name</Label>
+            <Input
+              id="lastName"
+              placeholder="Last Name"
+              className="py-6 text-foreground"
+              {...register("lastName", { required: "Last name is required" })}
+              onChange={() => onDataChange?.(true)}
+            />
+          </div>
+        </div>
+
+        <div className="grid gap-2">
+          <Label htmlFor="username">Username</Label>
+          <Input
+            id="username"
+            placeholder="Username"
+            className="py-6 text-foreground"
+            {...register("username", { required: "Username is required" })}
+            onChange={() => onDataChange?.(true)}
+          />
+        </div>
+
+        <div className="grid gap-2">
+          <Label htmlFor="email">Email</Label>
+          <Input
+            id="email"
+            type="email"
+            placeholder="m@example.com"
+            className="py-6 text-foreground"
+            {...register("email", {
+              required: "Email is required",
+              pattern: {
+                value: /^\S+@\S+$/i,
+                message: "Invalid email address",
+              },
+            })}
+            onChange={() => onDataChange?.(true)}
+          />
+        </div>
+      </div>
+    </form>
+  );
+};
+
+type TimezoneFormValues = {
+  city: string;
+  timezone: string;
+  dateTimeFormat: string;
+};
+
+interface TimezoneFormProps {
+  onDataChange?: (changed: boolean) => void;
+  setSubmitFn?: (submitFn: () => void) => void;
+}
+
+export const TimezonePreferencesForm = ({
+  onDataChange,
+  setSubmitFn,
+}: TimezoneFormProps) => {
+  const form = useForm<TimezoneFormValues>();
+  const { register, handleSubmit } = form;
+
+  const onSubmit = (data: TimezoneFormValues) => {
+    console.log("Timezone & Preferences:", data);
+    onDataChange?.(false);
+  };
+
+  // Expose submit function to parent SaveButton
+
+  useEffect(() => {
+    if (!setSubmitFn) return;
+
+    setSubmitFn(() => handleSubmit(onSubmit));
+  }, [handleSubmit, onSubmit, setSubmitFn]);
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div className="flex flex-col gap-6 text-muted-foreground text-sm">
+        <div className="flex w-full gap-5">
+          <div className="grid gap-2 flex-1">
+            <Label htmlFor="city">City</Label>
+            <Input
+              id="city"
+              placeholder="Enter your city"
+              className="py-6 text-foreground"
+              {...register("city", { required: "City is required" })}
+              onChange={() => onDataChange?.(true)}
+            />
+          </div>
+
+          <div className="grid gap-2 flex-1">
+            <Label htmlFor="timezone">Timezone</Label>
+            <Input
+              id="timezone"
+              placeholder="e.g. UTC, GMT+1, America/New_York"
+              className="py-6 text-foreground"
+              {...register("timezone", { required: "Timezone is required" })}
+              onChange={() => onDataChange?.(true)}
+            />
+          </div>
+
+          <div className="grid gap-2 flex-1">
+            <Label htmlFor="dateTimeFormat">Date & Time Format</Label>
+            <Input
+              id="dateTimeFormat"
+              placeholder="e.g. DD/MM/YYYY HH:mm"
+              className="py-6 text-foreground"
+              {...register("dateTimeFormat", {
+                required: "Date & time format is required",
+              })}
+              onChange={() => onDataChange?.(true)}
+            />
+          </div>
+        </div>
+      </div>
+    </form>
+  );
+};
+
+interface SaveButtonProps {
+  onClick?: () => void;
+}
+
+const SaveButton = ({ onClick }: SaveButtonProps) => {
+  return (
+    <div className="col-span-2 w-full flex items-center justify-center mb-5">
+      <div className="w-50">
+        <ButtonComp onClick={onClick}>Save</ButtonComp>
+      </div>
+    </div>
   );
 };
