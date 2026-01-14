@@ -1,15 +1,21 @@
-import { AppSidebar } from "@/components/app-sidebar";
+import { AppSidebar } from "@/components/AppSidebar";
+import ClosedIncidents from "@/components/ClosedIncidents";
 import { OpenIncidents } from "@/components/OpenIncidents";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { UnseenIncidents } from "@/components/UnseenIncidents";
+import { useState } from "react";
 
 const Dashboard = () => {
+  const [selected, setSelected] = useState<string>("Open Incidents");
   return (
     <SidebarProvider className="h-full w-full p-5">
-      <AppSidebar />
+      <AppSidebar selected={selected} setSelected={setSelected} />
       <ScrollArea className="bg-background w-full h-full rounded-2xl pb-5">
         <TopBar />
-        <OpenIncidents />
+        {selected === "Unseen Incidents" && <UnseenIncidents />}
+        {selected === "Open Incidents" && <OpenIncidents />}
+        {selected === "Closed Incidents" && <ClosedIncidents />}
       </ScrollArea>
     </SidebarProvider>
   );
