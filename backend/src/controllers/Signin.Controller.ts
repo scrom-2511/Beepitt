@@ -1,45 +1,75 @@
-import { Response } from "express";
-import { User } from "../models/User.Model";
-import { verifyHashedData } from "../utilities/Hasher";
-import { SigninType } from "../types/Auth.Type";
-import dotenv from "dotenv";
+import bcrypt from "bcrypt";
+import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { CustomReq } from "../interfaces/CustomReq.Interface";
+import { prisma } from "../database/prismaClient";
+import { LoginType } from "../types/dataTypes";
+import { ERROR_CODES, HttpStatus } from "../types/errorCodes";
 
-dotenv.config();
-
-const jwt_secret = process.env.JWT_SECRET!;
-
-export const signin = async (req: CustomReq, res: Response) => {
+export const SigninController = async (req: Request, res: Response) => {
   try {
-    const validateData = SigninType.safeParse(req.body);
+    const validateData = LoginType.safeParse(req.body);
     if (!validateData.success) {
-      res.json({ message: "Enter the values properly.", success: false });
-      return;
+      return res.status(HttpStatus.BAD_REQUEST).json({
+        success: false,
+        error: {
+          code: ERROR_CODES.INVALID_INPUT.code,
+          message: ERROR_CODES.INVALID_INPUT.message,
+        },
+      });
     }
 
-    const user = await User.findOne({ email: validateData.data.email });
-    if (!user || !user.password) {
-      res.json({ message: "There is no user with these email", success: false });
-      return;
-    } else if (
-      !(await verifyHashedData(validateData.data.password, user.password))
-    ) {
-      res.json({ message: "Enter the correct password!", success: false });
-      return;
+    const data = await prisma.user.findUnique({
+      where: { email: validateData.data.email },
+    });
+
+    if (!data) {
+      return res.status(HttpStatus.UNAUTHORIZED).json({
+        success: false,
+        error: {
+          code: ERROR_CODES.USER_NOT_FOUND.code,
+          message: ERROR_CODES.USER_NOT_FOUND.message,
+        },
+      });
     }
-    const { username } = user;
-    const userID = user.id;
-    const token = jwt.sign({ userID }, jwt_secret);
-    res
-      .cookie("token", token, {
+
+    const isPasswordValid = await bcrypt.compare(
+      validateData.data.password,
+      data.password
+    );
+
+    if (!isPasswordValid) {
+      return res.status(HttpStatus.UNAUTHORIZED).json({
+        success: false,
+        error: {
+          code: ERROR_CODES.INCORRECT_PASSWORD.code,
+          message: ERROR_CODES.INCORRECT_PASSWORD.message,
+        },
+      });
+    }
+
+    const jwtPayload = { id: data.id };
+    const jwtSecret = process.env.JWT_SECRET;
+
+    const authToken = jwt.sign(jwtPayload, jwtSecret!, { expiresIn: "30d" });
+
+    return res
+      .cookie("authToken", authToken, {
         httpOnly: true,
         sameSite: "strict",
+        maxAge: 30 * 24 * 60 * 60 * 1000,
       })
-      .json({ message: "Signin successfull", success: true, token, username });
-    return;
+      .status(HttpStatus.OK)
+      .json({
+        success: true,
+      });
   } catch (error) {
     console.error(error);
-    res.json({message: "Internal Server Error!", success: false})
+    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      error: {
+        code: ERROR_CODES.INTERNAL_SERVER_ERROR.code,
+        message: ERROR_CODES.INTERNAL_SERVER_ERROR.message,
+      },
+    });
   }
 };
