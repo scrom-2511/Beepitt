@@ -13,6 +13,14 @@ datasource db {
   provider = "postgresql"
 }
 
+enum ErrorPriority {
+  Undefined
+  Critical
+  High
+  Low
+  Fixed
+}
+
 model User {
   id            Int      @id @default(autoincrement())
   username      String   @unique
@@ -23,6 +31,16 @@ model User {
   dateAndFormat String
   createAt      DateTime @default(now())
   updateAt      DateTime @updatedAt
+  errors        Errors[]
 }
 
-
+model Errors {
+  id                      Int           @id @default(autoincrement())
+  errorName               String
+  errorDesc               String
+  errorPriority           ErrorPriority
+  errorDateAndTime        DateTime      @default(now())
+  errorResolveDateAndTime DateTime
+  userId                  Int
+  user                    User          @relation(fields: [userId], references: [id])
+}
