@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
 import { prisma } from "../database/prismaClient";
+import { locationDetectorProducerSend } from "../services/kafka/producer";
 import { SignupType } from "../types/dataTypes";
 import { ERROR_CODES, HttpStatus } from "../types/errorCodes";
 
@@ -33,8 +34,6 @@ export const signup = async (req: Request, res: Response) => {
 
     const hashedPassword = await bcrypt.hash(validateData.data.password, 10);
 
-    
-
     const newUser = await prisma.user.create({
       data: {
         username: validateData.data.username,
@@ -43,7 +42,18 @@ export const signup = async (req: Request, res: Response) => {
       },
     });
 
-    return;
+    try {
+      await locationDetectorProducerSend({
+        key: newUser.id.toString(),
+        value: req.ip ?? "unknown",
+      });
+    } catch (err) {
+      console.error("Kafka producer error:", err);
+    }
+
+    return res.status(HttpStatus.CREATED).json({
+      success: true,
+    });
   } catch (error) {
     console.error(error);
     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
