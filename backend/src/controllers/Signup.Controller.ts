@@ -1,54 +1,57 @@
-import { Response } from "express";
-import dotenv from "dotenv";
-import { SignupType } from "../types/Auth.Type";
-import { User } from "../models/User.Model";
-import crypto from "crypto"
-import { Otp } from "../models/Otp.Model";
-import { hashData } from "../utilities/Hasher";
-import { OtpType } from "../types/Otp.Type";
-import { CustomReq } from "../interfaces/CustomReq.Interface";
+import bcrypt from "bcrypt";
+import { Request, Response } from "express";
+import { prisma } from "../database/prismaClient";
+import { SignupType } from "../types/dataTypes";
+import { ERROR_CODES, HttpStatus } from "../types/errorCodes";
 
-dotenv.config();
-
-export const signup = async (req: CustomReq, res: Response) => {
+export const signup = async (req: Request, res: Response) => {
   try {
     const validateData = SignupType.safeParse(req.body);
-
     if (!validateData.success) {
-      console.log(validateData.error)
-
-      res.status(400).json({ message: "Please enter the values properly.", success: false });
-      return;
+      return res.status(HttpStatus.BAD_REQUEST).json({
+        success: false,
+        error: {
+          code: ERROR_CODES.INVALID_INPUT.code,
+          message: ERROR_CODES.INVALID_INPUT.message,
+        },
+      });
     }
 
-    const userExists = await User.findOne({ email: validateData.data.email });
-    if (userExists) {
-      res.status(400).json({ message: "An account with this email already exists!", success: false });
-      return;
+    const data = await prisma.user.findUnique({
+      where: { email: validateData.data.email },
+    });
+
+    if (data) {
+      return res.status(HttpStatus.CONFLICT).json({
+        success: false,
+        error: {
+          code: ERROR_CODES.DATA_ALREADY_EXISTS.code,
+          message: ERROR_CODES.DATA_ALREADY_EXISTS.message,
+        },
+      });
     }
 
-    const password = await hashData(validateData.data.password);
+    const hashedPassword = await bcrypt.hash(validateData.data.password, 10);
 
-    const { username, email } = validateData.data;
-    const newUser = await User.create({ username, password, email });
+    
 
-    const createOtp = crypto.randomInt(100000, 1000000);
-    const otp = await hashData(String(createOtp))
-    console.log(createOtp)
+    const newUser = await prisma.user.create({
+      data: {
+        username: validateData.data.username,
+        email: validateData.data.email,
+        password: hashedPassword,
+      },
+    });
 
-    const validateOtp = OtpType.safeParse({ otp, email })
-    if (!validateOtp.success) {
-      res.status(400).json({ message: "Please enter the otp properly.", success: false });
-      return;
-    }
-
-    const newOtp = await Otp.create(validateOtp.data)
-
-    res.status(201).json({ message: "Signup successfull", success: true });
     return;
   } catch (error) {
-    console.error("Signup error:", error);
-    res.status(500).json({ error: "Internal server error" });
-    return;
+    console.error(error);
+    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      error: {
+        code: ERROR_CODES.INTERNAL_SERVER_ERROR.code,
+        message: ERROR_CODES.INTERNAL_SERVER_ERROR.message,
+      },
+    });
   }
 };

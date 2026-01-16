@@ -24,13 +24,13 @@ enum ErrorPriority {
 model User {
   id            Int      @id @default(autoincrement())
   username      String   @unique
-  firstName     String
-  lastName      String
+  firstName     String?
+  lastName      String?
   email         String   @unique
   password      String
-  city          String
-  timezone      String
-  dateAndFormat String
+  city          String?
+  timezone      String?
+  dateAndFormat String?
   createAt      DateTime @default(now())
   updateAt      DateTime @updatedAt
   errors        Errors[]

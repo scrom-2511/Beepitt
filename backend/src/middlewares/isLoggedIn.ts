@@ -24,6 +24,10 @@ export const isLoggedIn: RequestHandler = (req: CustomReq, res: Response, next: 
         }
         
         const decoded = jwt.verify(token, jwtSecret) as JwtPayload;
+        if (!decoded || typeof decoded !== 'object' || !decoded.userID) {
+            res.status(401).json({ message: "Invalid token payload", success: false });
+            return;
+        }
         req.userID = decoded.userID
         next();
     } catch (err) {
