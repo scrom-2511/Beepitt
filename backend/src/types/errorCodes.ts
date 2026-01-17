@@ -1,72 +1,104 @@
 export const ERROR_CODES = {
   INVALID_INPUT: {
+    id: 1000,
     code: "INVALID_INPUT",
     message: "Please provide valid input or missing required fields.",
   },
 
   INVALID_ID: {
+    id: 1001,
     code: "INVALID_ID",
     message: "Invalid resource identifier.",
   },
 
   UNAUTHORIZED: {
+    id: 1100,
     code: "UNAUTHORIZED",
     message: "Authentication is required.",
   },
+
   USER_NOT_FOUND: {
+    id: 1101,
     code: "USER_NOT_FOUND",
     message: "The details you entered does not belong to any user.",
   },
+
   INCORRECT_PASSWORD: {
+    id: 1102,
     code: "INCORRECT_PASSWORD",
     message: "The password you entered is incorrect.",
   },
+
   FORBIDDEN: {
+    id: 1103,
     code: "FORBIDDEN",
     message: "You do not have permission to perform this action.",
   },
+
   TOKEN_EXPIRED: {
+    id: 1104,
     code: "TOKEN_EXPIRED",
     message: "Your session has expired. Please log in again.",
   },
+
   TOKEN_INVALID: {
+    id: 1105,
     code: "TOKEN_INVALID",
     message: "Invalid authentication token.",
   },
+
   RESOURCE_NOT_FOUND: {
+    id: 1200,
     code: "RESOURCE_NOT_FOUND",
     message: "Requested resource was not found.",
   },
+
   LINK_NOT_FOUND: {
+    id: 1201,
     code: "LINK_NOT_FOUND",
     message: "Short link does not exist.",
   },
+
   DATA_ALREADY_EXISTS: {
+    id: 1202,
     code: "DATA_ALREADY_EXISTS",
     message: "Data already exists.",
   },
 
   OPERATION_NOT_ALLOWED: {
+    id: 1300,
     code: "OPERATION_NOT_ALLOWED",
     message: "This operation is not allowed.",
   },
+
   LIMIT_EXCEEDED: {
+    id: 1301,
     code: "LIMIT_EXCEEDED",
     message: "You have exceeded the allowed limit.",
   },
 
   TOO_MANY_REQUESTS: {
+    id: 1400,
     code: "TOO_MANY_REQUESTS",
     message: "Too many requests. Please try again later.",
   },
+
   SERVICE_UNAVAILABLE: {
+    id: 1500,
     code: "SERVICE_UNAVAILABLE",
     message: "Service is temporarily unavailable.",
   },
 
   INTERNAL_SERVER_ERROR: {
+    id: 1501,
     code: "INTERNAL_SERVER_ERROR",
     message: "Something went wrong. Please try again later.",
+  },
+
+  OTP_VERIFICATION_NEEDED: {
+    id: 1600,
+    code: "OTP_VERIFICATION_NEEDED",
+    message: "Verify otp from your email.",
   },
 } as const;
 

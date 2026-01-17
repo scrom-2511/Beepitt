@@ -15,6 +15,6 @@
     "strict": true,
     "skipLibCheck": true
   },
-  "include": ["src"],
+  "include": ["src", "src/controllers/Signup.Controller.ts", "src/controllers/Signin.Controller.ts"],
   "exclude": ["node_modules", "dist"]
 }

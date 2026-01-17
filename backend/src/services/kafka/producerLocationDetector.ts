@@ -1,17 +1,13 @@
+import { ProducerMessage } from "../../types/dataTypes";
 import { kafka } from "./kafkaClient";
 
 const producer = kafka.producer();
-
-interface Message {
-  key: string;
-  value: string;
-}
 
 export const connectProducer = async () => {
   await producer.connect();
 };
 
-export const locationDetectorProducerSend = async (message: Message) => {
+export const locationDetectorProducerSend = async (message: ProducerMessage) => {
   try {
     await producer.send({
       topic: "location-detector",

@@ -1,7 +1,6 @@
-import { Router, Request, Response } from "express";
-import { isLoggedIn } from "../middlewares/isLoggedIn";
-import { sendEmailAndErrMsg } from "../controllers/SendEmailAndErrMsg.Controller";
+import { Router } from "express";
+import { onErrorFromClientController } from "../webhooks/onErrorFromClient.webhook";
 
 export const appRouter = Router();
 
-appRouter.post("/err", sendEmailAndErrMsg)
+appRouter.post("/err", onErrorFromClientController);

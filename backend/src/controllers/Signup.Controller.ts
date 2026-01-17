@@ -6,7 +6,7 @@ import { locationDetectorProducerSend } from "../services/kafka/producerLocation
 import { SignupType } from "../types/dataTypes";
 import { ERROR_CODES, HttpStatus } from "../types/errorCodes";
 
-export const signup = async (req: Request, res: Response) => {
+export const signupController = async (req: Request, res: Response) => {
   try {
     const validateData = SignupType.safeParse(req.body);
     if (!validateData.success) {
@@ -45,6 +45,7 @@ export const signup = async (req: Request, res: Response) => {
         city: "",
         dateAndFormat: "",
         identifierKey,
+        subscription_tier: "Free",
       },
     });
 
