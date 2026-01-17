@@ -5,13 +5,14 @@ import { prisma } from "../database/prismaClient";
 import { LoginType } from "../types/dataTypes";
 import { ERROR_CODES, HttpStatus } from "../types/errorCodes";
 
-export const SigninController = async (req: Request, res: Response) => {
+export const signinController = async (req: Request, res: Response) => {
   try {
     const validateData = LoginType.safeParse(req.body);
     if (!validateData.success) {
       return res.status(HttpStatus.BAD_REQUEST).json({
         success: false,
         error: {
+          id: ERROR_CODES.INVALID_INPUT.code,
           code: ERROR_CODES.INVALID_INPUT.code,
           message: ERROR_CODES.INVALID_INPUT.message,
         },
@@ -26,21 +27,34 @@ export const SigninController = async (req: Request, res: Response) => {
       return res.status(HttpStatus.UNAUTHORIZED).json({
         success: false,
         error: {
+          id: ERROR_CODES.USER_NOT_FOUND.id,
           code: ERROR_CODES.USER_NOT_FOUND.code,
           message: ERROR_CODES.USER_NOT_FOUND.message,
         },
       });
     }
 
+    if (data.otpVerified === false) {
+      return res.status(HttpStatus.UNAUTHORIZED).json({
+        success: false,
+        error: {
+          id: ERROR_CODES.OTP_VERIFICATION_NEEDED.id,
+          code: ERROR_CODES.OTP_VERIFICATION_NEEDED.code,
+          message: ERROR_CODES.OTP_VERIFICATION_NEEDED.message,
+        },
+      });
+    }
+
     const isPasswordValid = await bcrypt.compare(
       validateData.data.password,
-      data.password
+      data.password,
     );
 
     if (!isPasswordValid) {
       return res.status(HttpStatus.UNAUTHORIZED).json({
         success: false,
         error: {
+          id: ERROR_CODES.INCORRECT_PASSWORD.id,
           code: ERROR_CODES.INCORRECT_PASSWORD.code,
           message: ERROR_CODES.INCORRECT_PASSWORD.message,
         },
@@ -67,6 +81,7 @@ export const SigninController = async (req: Request, res: Response) => {
     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
       success: false,
       error: {
+        id: ERROR_CODES.INTERNAL_SERVER_ERROR.id,
         code: ERROR_CODES.INTERNAL_SERVER_ERROR.code,
         message: ERROR_CODES.INTERNAL_SERVER_ERROR.message,
       },
