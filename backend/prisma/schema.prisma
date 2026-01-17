@@ -21,21 +21,27 @@ enum ErrorPriority {
   Fixed
 }
 
+enum SubscriptionTier {
+  Free
+  Premium
+}
+
 model User {
-  id             Int              @id @default(autoincrement())
-  identifierKey  String           @unique
-  username       String           @unique
-  firstName      String?
-  lastName       String?
-  email          String           @unique
-  password       String
-  city           String?
-  timezone       String?
-  dateAndFormat  String?
-  createAt       DateTime         @default(now())
-  updateAt       DateTime         @updatedAt
-  errors         Errors[]
-  contactDetails ContactDetails[]
+  id                Int              @id @default(autoincrement())
+  identifierKey     String           @unique
+  username          String           @unique
+  firstName         String?
+  lastName          String?
+  email             String           @unique
+  password          String
+  city              String?
+  timezone          String?
+  dateAndFormat     String?
+  createAt          DateTime         @default(now())
+  updateAt          DateTime         @updatedAt
+  subscription_tier SubscriptionTier
+  errors            Errors[]
+  contactDetails    ContactDetails[]
 }
 
 model Errors {
@@ -53,6 +59,6 @@ model ContactDetails {
   id              Int      @id @default(autoincrement())
   telegramChatIds String[]
   discordChatIds  String[]
-  userId          Int
+  userId          Int      @unique
   user            User     @relation(fields: [userId], references: [id])
 }
