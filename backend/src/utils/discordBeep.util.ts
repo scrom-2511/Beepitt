@@ -126,3 +126,16 @@ discordClient.on("messageCreate", async (msg) => {
     }
   }
 });
+
+export const discordBeep = async (discordChatIds: string[]) => {
+  try {
+    await Promise.allSettled(
+      discordChatIds.map(async (chatId) => {
+        const user = await discordClient.users.fetch(chatId);
+        await user.send("Your backend fked up man!");
+      }),
+    );
+  } catch (error) {
+    console.error(error);
+  }
+};
