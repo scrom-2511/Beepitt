@@ -22,27 +22,37 @@ enum ErrorPriority {
 }
 
 model User {
-  id            Int      @id @default(autoincrement())
-  username      String   @unique
-  firstName     String?
-  lastName      String?
-  email         String   @unique
-  password      String
-  city          String?
-  timezone      String?
-  dateAndFormat String?
-  createAt      DateTime @default(now())
-  updateAt      DateTime @updatedAt
-  errors        Errors[]
+  id             Int              @id @default(autoincrement())
+  identifierKey  String           @unique
+  username       String           @unique
+  firstName      String?
+  lastName       String?
+  email          String           @unique
+  password       String
+  city           String?
+  timezone       String?
+  dateAndFormat  String?
+  createAt       DateTime         @default(now())
+  updateAt       DateTime         @updatedAt
+  errors         Errors[]
+  contactDetails ContactDetails[]
 }
 
 model Errors {
-  id                      Int           @id @default(autoincrement())
+  id                      Int            @id @default(autoincrement())
   errorName               String
   errorDesc               String
-  errorPriority           ErrorPriority
-  errorDateAndTime        DateTime      @default(now())
-  errorResolveDateAndTime DateTime
+  errorPriority           ErrorPriority?
+  errorDateAndTime        DateTime       @default(now())
+  errorResolveDateAndTime DateTime?
   userId                  Int
-  user                    User          @relation(fields: [userId], references: [id])
+  user                    User           @relation(fields: [userId], references: [id])
+}
+
+model ContactDetails {
+  id              Int      @id @default(autoincrement())
+  telegramChatIds String[]
+  discordChatIds  String[]
+  userId          Int
+  user            User     @relation(fields: [userId], references: [id])
 }
