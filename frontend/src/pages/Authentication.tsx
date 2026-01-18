@@ -9,6 +9,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 import { signinHandler } from "@/requestHandler/Signin.ReqHandler";
 import { signupHandler } from "@/requestHandler/Signup.ReqHandler";
 import { useMutation } from "@tanstack/react-query";
@@ -377,3 +382,38 @@ const SignupCardComponent = ({
   );
 };
 
+const OtpComp = () => {
+  const [otpValue, setOtpValue] = useState<string>("");
+  const maxLength = 4;
+  return (
+    <div className="h-full w-full flex flex-col justify-between px-16 py-32">
+      <div className="flex flex-col">
+        <CardTitle className="text-6xl font-montserrat font-medium text-foreground">
+          Verify Code
+        </CardTitle>
+        <CardDescription className="font-montserrat mt-4 mb-20">
+          We sent you a verification code to you mail address
+        </CardDescription>
+        <InputOTP
+          maxLength={maxLength}
+          className="h-full w-full"
+          value={otpValue}
+          onChange={(value) => {
+            if (value.length === maxLength) {
+            }
+            setOtpValue(value);
+            console.log(otpValue);
+          }}
+        >
+          <InputOTPGroup className="text-foreground h-full w-full">
+            <InputOTPSlot index={0} />
+            <InputOTPSlot index={1} />
+            <InputOTPSlot index={2} />
+            <InputOTPSlot index={3} />
+          </InputOTPGroup>
+        </InputOTP>
+      </div>
+      <ButtonComp variant={"default"}>Submit</ButtonComp>
+    </div>
+  );
+};
