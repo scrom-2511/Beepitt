@@ -14,10 +14,10 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { profileDetailsUpdateHandler } from "@/requestHandler/auth/ProfileDetailsUpdater.reqHandler";
+import { signinHandler } from "@/requestHandler/auth/Signin.ReqHandler";
+import { signupHandler } from "@/requestHandler/auth/Signup.ReqHandler";
 import { otpValidatorHandler } from "@/requestHandler/OtpValidator.ReqHandler";
-import { profileDetailsUpdateHandler } from "@/requestHandler/ProfileDetailsUpdater.reqHandler";
-import { signinHandler } from "@/requestHandler/Signin.ReqHandler";
-import { signupHandler } from "@/requestHandler/Signup.ReqHandler";
 import { useMutation } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import React, { useRef, useState } from "react";
