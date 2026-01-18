@@ -1,17 +1,13 @@
-import { NextFunction, Request, Response } from "express";
-import jwt, { JwtPayload } from "jsonwebtoken";
-import { ERROR_CODES, HttpStatus } from "../types/errorCodes.ts";
+import { NextFunction, Request, Response } from 'express';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import { ERROR_CODES, HttpStatus } from '../types/errorCodes';
 
 const jwtSecret = process.env.JWT_SECRET;
 
-export const isLoggedIn = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+export const isLoggedIn = (req: Request, res: Response, next: NextFunction) => {
   if (!jwtSecret) {
-    console.error("JWT_SECRET not set");
-    res.status(500).json({ message: "Server error", success: false });
+    console.error('JWT_SECRET not set');
+    res.status(500).json({ message: 'Server error', success: false });
     return;
   }
 
@@ -27,7 +23,7 @@ export const isLoggedIn = (
 
   try {
     const decoded = jwt.verify(authToken, jwtSecret) as JwtPayload;
-    req.userId = decoded.id;
+    req.userId = decoded.userId;
     next();
   } catch (err) {
     res.status(HttpStatus.UNAUTHORIZED).json({
