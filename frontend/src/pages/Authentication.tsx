@@ -14,6 +14,8 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { otpValidatorHandler } from "@/requestHandler/OtpValidator.ReqHandler";
+import { profileDetailsUpdateHandler } from "@/requestHandler/ProfileDetailsUpdater.reqHandler";
 import { signinHandler } from "@/requestHandler/Signin.ReqHandler";
 import { signupHandler } from "@/requestHandler/Signup.ReqHandler";
 import { useMutation } from "@tanstack/react-query";
@@ -22,11 +24,10 @@ import React, { useRef, useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { FaGithub, FaGoogle } from "react-icons/fa";
 
+type AuthStep = "signin" | "signup" | "otp" | "profile";
 const Authentication = () => {
-  const [signinComp, setSigninComp] = useState(false);
-  const [signupComp, setSignupComp] = useState(false);
-  const [otpComp, setOtpComp] = useState(true);
-  const [animate, setAnimate] = useState(true);
+  const [step, setStep] = useState<AuthStep>("profile");
+  const [animate, setAnimate] = useState<boolean>(true);
   const cardRef = useRef<HTMLDivElement>(null);
 
   return (
@@ -34,7 +35,7 @@ const Authentication = () => {
       <motion.div
         ref={cardRef}
         animate={{
-          x: animate ? (signupComp ? "100%" : "0%") : "",
+          x: animate ? (step === "signup" ? "100%" : "0%") : "",
         }}
         onAnimationStart={() => {
           if (cardRef.current) cardRef.current.style.filter = "blur(5px)";
@@ -45,29 +46,21 @@ const Authentication = () => {
         transition={{ duration: 0.3, ease: "easeInOut" }}
         className="w-full h-full order-1"
       >
-        {signupComp && (
-          <SignupCardComponent
-            setSigninComp={setSigninComp}
-            setSignupComp={setSignupComp}
-            setOtpComp={setOtpComp}
-            setAnimate={setAnimate}
-          />
+        {step === "signup" && (
+          <SignupCardComponent setStep={setStep} setAnimate={setAnimate} />
         )}
 
-        {signinComp && (
-          <SigninCardComponent
-            setSigninComp={setSigninComp}
-            setSignupComp={setSignupComp}
-            setOtpComp={setOtpComp}
-          />
+        {step === "signin" && (
+          <SigninCardComponent setStep={setStep} setAnimate={setAnimate} />
         )}
+        {step === "otp" && <OtpComp setStep={setStep} />}
 
-        {otpComp && <OtpComp />}
+        {step === "profile" && <ProfileDetailsInputComponent />}
       </motion.div>
 
       <motion.div
         animate={{
-          x: animate ? (signupComp ? "-100%" : "0%") : "",
+          x: animate ? (step === "signup" ? "-100%" : "0%") : "",
         }}
         transition={{ duration: 0.3, ease: "easeInOut" }}
         className="bg-black order-2"
@@ -84,13 +77,11 @@ type SigninFormValues = {
 };
 
 const SigninCardComponent = ({
-  setSignupComp,
-  setSigninComp,
-  setOtpComp,
+  setStep,
+  setAnimate,
 }: {
-  setSignupComp: React.Dispatch<React.SetStateAction<boolean>>;
-  setSigninComp: React.Dispatch<React.SetStateAction<boolean>>;
-  setOtpComp: React.Dispatch<React.SetStateAction<boolean>>;
+  setStep: React.Dispatch<React.SetStateAction<AuthStep>>;
+  setAnimate: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const {
     register,
@@ -133,8 +124,7 @@ const SigninCardComponent = ({
             className="pl-2 underline cursor-pointer"
             variant="link"
             onClick={() => {
-              setSigninComp((prev) => !prev);
-              setSignupComp((prev) => !prev);
+              setStep("signup");
             }}
           >
             Create an account
@@ -225,14 +215,10 @@ type SignupFormValues = {
 };
 
 const SignupCardComponent = ({
-  setSignupComp,
-  setSigninComp,
-  setOtpComp,
+  setStep,
   setAnimate,
 }: {
-  setSignupComp: React.Dispatch<React.SetStateAction<boolean>>;
-  setSigninComp: React.Dispatch<React.SetStateAction<boolean>>;
-  setOtpComp: React.Dispatch<React.SetStateAction<boolean>>;
+  setStep: React.Dispatch<React.SetStateAction<AuthStep>>;
   setAnimate: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const {
@@ -249,10 +235,8 @@ const SignupCardComponent = ({
     mutationFn: signupHandler,
     onSuccess: (res) => {
       if (res.success) {
-        setSigninComp(false);
-        setSignupComp(false);
         setAnimate(false);
-        setOtpComp(true);
+        setStep("otp");
       } else {
         console.log("bad");
       }
@@ -280,8 +264,7 @@ const SignupCardComponent = ({
             className="pl-2 underline cursor-pointer"
             variant="link"
             onClick={() => {
-              setSigninComp((prev) => !prev);
-              setSignupComp((prev) => !prev);
+              setStep("signin");
             }}
           >
             Log in
@@ -382,9 +365,26 @@ const SignupCardComponent = ({
   );
 };
 
-const OtpComp = () => {
+const OtpComp = ({
+  setStep,
+}: {
+  setStep: React.Dispatch<React.SetStateAction<AuthStep>>;
+}) => {
   const [otpValue, setOtpValue] = useState<string>("");
   const maxLength = 4;
+  const {
+    mutate: otpValidator,
+    data,
+    isPending,
+  } = useMutation({
+    mutationFn: otpValidatorHandler,
+    onSuccess: (res) => {
+      if (res.success) {
+        setStep("profile");
+      } else {
+      }
+    },
+  });
   return (
     <div className="h-full w-full flex flex-col justify-between px-16 py-32">
       <div className="flex flex-col">
@@ -413,7 +413,94 @@ const OtpComp = () => {
           </InputOTPGroup>
         </InputOTP>
       </div>
-      <ButtonComp variant={"default"}>Submit</ButtonComp>
+      <ButtonComp variant={"default"}>
+        {isPending ? "Checking otp" : "Submit"}
+      </ButtonComp>
     </div>
+  );
+};
+
+type ProfileDetailsForm = {
+  firstName: string;
+  lastName: string;
+};
+
+const ProfileDetailsInputComponent = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ProfileDetailsForm>();
+
+  const {
+    mutate: profileDetailsUpdate,
+    data,
+    isPending,
+  } = useMutation({ mutationFn: profileDetailsUpdateHandler });
+
+  const onSubmit: SubmitHandler<ProfileDetailsForm> = (formData) => {
+    profileDetailsUpdate(formData);
+  };
+  return (
+    <Card className="w-full h-full py-0 justify-center">
+      <CardHeader>
+        <CardTitle className="text-6xl font-montserrat font-medium">
+          Your Profile
+        </CardTitle>
+
+        <CardDescription className="font-montserrat mt-4">
+          Enter your first name and last name
+        </CardDescription>
+      </CardHeader>
+
+      <CardContent className="mt-8">
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="flex flex-col gap-6 py-32">
+            {/* First name Field */}
+            <div className="grid gap-2">
+              <Input
+                id="firstName"
+                type="text"
+                placeholder="First name"
+                className="py-6"
+                autoComplete="off"
+                {...register("firstName", {
+                  required: "First name is required",
+                })}
+              />
+              {errors.firstName && (
+                <span className="text-red-500 text-sm">
+                  {errors.firstName.message}
+                </span>
+              )}
+            </div>
+
+            {/* Last name Field */}
+            <div className="grid gap-2">
+              <Input
+                id="lastName"
+                type="text"
+                placeholder="Last name"
+                className="py-6"
+                autoComplete="off"
+                {...register("lastName", {
+                  required: "Lastname name is required",
+                })}
+              />
+              {errors.lastName && (
+                <span className="text-red-500 text-sm">
+                  {errors.lastName.message}
+                </span>
+              )}
+            </div>
+          </div>
+          <CardFooter className="flex-col gap-2 mt-16 p-0">
+            <ButtonComp variant={"default"} type="submit" disabled={isPending}>
+              {isPending ? "Setting up your profile" : "Sumbit"}
+            </ButtonComp>
+          </CardFooter>
+        </form>
+      </CardContent>
+    </Card>
   );
 };
