@@ -23,10 +23,12 @@ import { motion } from "framer-motion";
 import React, { useRef, useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { FaGithub, FaGoogle } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 type AuthStep = "signin" | "signup" | "otp" | "profile";
+
 const Authentication = () => {
-  const [step, setStep] = useState<AuthStep>("profile");
+  const [step, setStep] = useState<AuthStep>("signin");
   const [animate, setAnimate] = useState<boolean>(true);
   const cardRef = useRef<HTMLDivElement>(null);
 
@@ -181,7 +183,7 @@ const SigninCardComponent = ({
           </div>
 
           <CardFooter className="flex-col gap-2 mt-16 p-0">
-            <ButtonComp variant={"default"} type="submit" disabled={isPending}>
+            <ButtonComp variant={isPending? "secondary" : "default"} type="submit" disabled={isPending}>
               {isPending ? "Loading" : "Log in"}
             </ButtonComp>
 
@@ -338,7 +340,7 @@ const SignupCardComponent = ({
           </div>
 
           <CardFooter className="flex-col mt-16 gap-2 p-0">
-            <ButtonComp variant={"default"} type="submit" disabled={isPending}>
+            <ButtonComp variant={isPending? "secondary" : "default"} type="submit" disabled={isPending}>
               {isPending ? "Loading" : "Create an account"}
             </ButtonComp>
 
@@ -413,7 +415,10 @@ const OtpComp = ({
           </InputOTPGroup>
         </InputOTP>
       </div>
-      <ButtonComp variant={"default"}>
+      <ButtonComp
+        variant={isPending? "secondary" : "default"}
+        onClick={() => otpValidator({ otp: otpValue })}
+      >
         {isPending ? "Checking otp" : "Submit"}
       </ButtonComp>
     </div>
@@ -426,6 +431,7 @@ type ProfileDetailsForm = {
 };
 
 const ProfileDetailsInputComponent = () => {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -436,7 +442,14 @@ const ProfileDetailsInputComponent = () => {
     mutate: profileDetailsUpdate,
     data,
     isPending,
-  } = useMutation({ mutationFn: profileDetailsUpdateHandler });
+  } = useMutation({
+    mutationFn: profileDetailsUpdateHandler,
+    onSuccess: (res) => {
+      if (res.success) {
+        navigate("/dashboard");
+      }
+    },
+  });
 
   const onSubmit: SubmitHandler<ProfileDetailsForm> = (formData) => {
     profileDetailsUpdate(formData);
@@ -495,7 +508,7 @@ const ProfileDetailsInputComponent = () => {
             </div>
           </div>
           <CardFooter className="flex-col gap-2 mt-16 p-0">
-            <ButtonComp variant={"default"} type="submit" disabled={isPending}>
+            <ButtonComp variant={isPending? "secondary" : "default"} type="submit" disabled={isPending}>
               {isPending ? "Setting up your profile" : "Sumbit"}
             </ButtonComp>
           </CardFooter>
