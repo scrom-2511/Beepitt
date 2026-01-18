@@ -1,11 +1,9 @@
+import cookieParser from "cookie-parser";
+import cors from "cors";
 import express, { Express } from "express";
-import { connectToDatabase } from "./database/Database";
-import { userRouter } from "./routes/User.Route";
-import { appRouter } from "./routes/App.Router";
-import cors from "cors"
-import cookieParser from "cookie-parser"
+import { appRouter } from "./routes/app.Route";
+import { userRouter } from "./routes/user.Route";
 const app: Express = express();
-connectToDatabase();
 
 app.use(cookieParser())
 app.use(express.json());

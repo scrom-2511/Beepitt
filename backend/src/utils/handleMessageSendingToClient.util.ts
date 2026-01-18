@@ -1,5 +1,5 @@
 import { produceMessageForMessageSender } from "../services/kafka/producerMessageSender";
-import { ProducerMessage } from "../types/dataTypes";
+import { ProducerMessage } from "../types/dataTypes.ts";
 
 interface InputData {
   errorName: string;

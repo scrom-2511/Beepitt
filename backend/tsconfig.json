@@ -1,20 +1,15 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "commonjs",
+    "target": "es2023",
+    "module": "esnext",
     "moduleResolution": "node",
-
-    "rootDir": "./src",
     "outDir": "./dist",
-
-    "types": ["node"],
-
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-
+    "rootDir": ".",
     "strict": true,
-    "skipLibCheck": true
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
   },
-  "include": ["src", "src/controllers/Signup.Controller.ts", "src/controllers/Signin.Controller.ts"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src/**/*", "generated/**/*"],
+  "exclude": ["node_modules"]
 }

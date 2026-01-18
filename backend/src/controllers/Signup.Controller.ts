@@ -10,13 +10,14 @@ export const signupController = async (req: Request, res: Response) => {
   try {
     const validateData = SignupType.safeParse(req.body);
     if (!validateData.success) {
-      return res.status(HttpStatus.BAD_REQUEST).json({
+      res.status(HttpStatus.BAD_REQUEST).json({
         success: false,
         error: {
           code: ERROR_CODES.INVALID_INPUT.code,
           message: ERROR_CODES.INVALID_INPUT.message,
         },
       });
+      return;
     }
 
     const data = await prisma.user.findUnique({
@@ -24,13 +25,14 @@ export const signupController = async (req: Request, res: Response) => {
     });
 
     if (data) {
-      return res.status(HttpStatus.CONFLICT).json({
+      res.status(HttpStatus.CONFLICT).json({
         success: false,
         error: {
           code: ERROR_CODES.DATA_ALREADY_EXISTS.code,
           message: ERROR_CODES.DATA_ALREADY_EXISTS.message,
         },
       });
+      return;
     }
 
     const hashedPassword = await bcrypt.hash(validateData.data.password, 10);
@@ -62,17 +64,19 @@ export const signupController = async (req: Request, res: Response) => {
       }
     }
 
-    return res.status(HttpStatus.CREATED).json({
+    res.status(HttpStatus.CREATED).json({
       success: true,
     });
+    return;
   } catch (error) {
     console.error(error);
-    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
       success: false,
       error: {
         code: ERROR_CODES.INTERNAL_SERVER_ERROR.code,
         message: ERROR_CODES.INTERNAL_SERVER_ERROR.message,
       },
     });
+    return;
   }
 };

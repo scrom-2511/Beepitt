@@ -9,7 +9,7 @@ export const signinController = async (req: Request, res: Response) => {
   try {
     const validateData = LoginType.safeParse(req.body);
     if (!validateData.success) {
-      return res.status(HttpStatus.BAD_REQUEST).json({
+      res.status(HttpStatus.BAD_REQUEST).json({
         success: false,
         error: {
           id: ERROR_CODES.INVALID_INPUT.code,
@@ -17,6 +17,7 @@ export const signinController = async (req: Request, res: Response) => {
           message: ERROR_CODES.INVALID_INPUT.message,
         },
       });
+      return;
     }
 
     const data = await prisma.user.findUnique({
@@ -24,7 +25,7 @@ export const signinController = async (req: Request, res: Response) => {
     });
 
     if (!data) {
-      return res.status(HttpStatus.UNAUTHORIZED).json({
+      res.status(HttpStatus.UNAUTHORIZED).json({
         success: false,
         error: {
           id: ERROR_CODES.USER_NOT_FOUND.id,
@@ -32,10 +33,11 @@ export const signinController = async (req: Request, res: Response) => {
           message: ERROR_CODES.USER_NOT_FOUND.message,
         },
       });
+      return;
     }
 
     if (data.otpVerified === false) {
-      return res.status(HttpStatus.UNAUTHORIZED).json({
+      res.status(HttpStatus.UNAUTHORIZED).json({
         success: false,
         error: {
           id: ERROR_CODES.OTP_VERIFICATION_NEEDED.id,
@@ -43,6 +45,7 @@ export const signinController = async (req: Request, res: Response) => {
           message: ERROR_CODES.OTP_VERIFICATION_NEEDED.message,
         },
       });
+      return;
     }
 
     const isPasswordValid = await bcrypt.compare(
@@ -51,7 +54,7 @@ export const signinController = async (req: Request, res: Response) => {
     );
 
     if (!isPasswordValid) {
-      return res.status(HttpStatus.UNAUTHORIZED).json({
+      res.status(HttpStatus.UNAUTHORIZED).json({
         success: false,
         error: {
           id: ERROR_CODES.INCORRECT_PASSWORD.id,
@@ -59,6 +62,7 @@ export const signinController = async (req: Request, res: Response) => {
           message: ERROR_CODES.INCORRECT_PASSWORD.message,
         },
       });
+      return;
     }
 
     const jwtPayload = { id: data.id };
@@ -66,7 +70,7 @@ export const signinController = async (req: Request, res: Response) => {
 
     const authToken = jwt.sign(jwtPayload, jwtSecret!, { expiresIn: "30d" });
 
-    return res
+    res
       .cookie("authToken", authToken, {
         httpOnly: true,
         sameSite: "strict",
@@ -76,9 +80,10 @@ export const signinController = async (req: Request, res: Response) => {
       .json({
         success: true,
       });
+    return;
   } catch (error) {
     console.error(error);
-    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
       success: false,
       error: {
         id: ERROR_CODES.INTERNAL_SERVER_ERROR.id,
@@ -86,5 +91,6 @@ export const signinController = async (req: Request, res: Response) => {
         message: ERROR_CODES.INTERNAL_SERVER_ERROR.message,
       },
     });
+    return;
   }
 };

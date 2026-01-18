@@ -1,30 +1,28 @@
 import { NextFunction, Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { ERROR_CODES, HttpStatus } from "../types/errorCodes";
+import { ERROR_CODES, HttpStatus } from "../types/errorCodes.ts";
 
 const jwtSecret = process.env.JWT_SECRET;
 
-export interface CustomReq extends Request {
-  userId: number;
-}
-
 export const isLoggedIn = (
-  req: CustomReq,
+  req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   if (!jwtSecret) {
     console.error("JWT_SECRET not set");
-    return res.status(500).json({ message: "Server error", success: false });
+    res.status(500).json({ message: "Server error", success: false });
+    return;
   }
 
   const { authToken } = req.cookies;
 
   if (!authToken) {
-    return res.status(HttpStatus.UNAUTHORIZED).json({
+    res.status(HttpStatus.UNAUTHORIZED).json({
       success: false,
       error: ERROR_CODES.UNAUTHORIZED,
     });
+    return;
   }
 
   try {
@@ -32,9 +30,10 @@ export const isLoggedIn = (
     req.userId = decoded.id;
     next();
   } catch (err) {
-    return res.status(HttpStatus.UNAUTHORIZED).json({
+    res.status(HttpStatus.UNAUTHORIZED).json({
       success: false,
       error: ERROR_CODES.UNAUTHORIZED,
     });
+    return;
   }
 };

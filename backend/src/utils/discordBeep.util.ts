@@ -1,6 +1,6 @@
 import { Client, GatewayIntentBits } from "discord.js";
 import { validate as isUUID } from "uuid";
-import { prisma } from "../database/prismaClient";
+import { prisma } from "../database/prismaClient.ts";
 
 // Create a new Discord client with required intents
 export const discordClient = new Client({

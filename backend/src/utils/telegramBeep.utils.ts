@@ -1,5 +1,5 @@
 import TelegramBot from "node-telegram-bot-api";
-import { prisma } from "../database/prismaClient";
+import { prisma } from "../database/prismaClient.ts";
 
 const token = process.env.TELEGRAM_BOT_ID!;
 

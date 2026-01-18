@@ -1,10 +1,13 @@
-import { Request, Response } from "express";
-import jwt, { JwtPayload } from "jsonwebtoken";
-import { prisma } from "../database/prismaClient";
-import { onErrorFromClientType } from "../types/dataTypes";
-import { handleMessageSendingToClient } from "../utils/handleMessageSendingToClient.util";
+import { Request, Response } from 'express';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import { prisma } from '../database/prismaClient';
+import { onErrorFromClientType } from '../types/dataTypes';
+import { handleMessageSendingToClient } from '../utils/handleMessageSendingToClient.util';
 
-export const onErrorFromClientController = async (req: Request, res: Response) => {
+export const onErrorFromClientController = async (
+  req: Request,
+  res: Response,
+) => {
   const validateData = onErrorFromClientType.safeParse(req.body);
 
   if (!validateData.success) {
