@@ -18,11 +18,17 @@ const ButtonComp = ({
   return (
     <motion.div
       whileHover={{ scale: 1.03 }}
-      whileTap={{ scale: 0.97 }}
+      whileTap={{ scale: 0.99 }}
       transition={{ type: "spring", stiffness: 100 }}
       className="w-full"
     >
-      <Button size={size} variant={variant} className={className} onClick={onClick}>
+      <Button
+        {...props}
+        size={size}
+        variant={variant}
+        className={className}
+        onClick={onClick}
+      >
         {children}
       </Button>
     </motion.div>

@@ -1,0 +1,105 @@
+import {
+  CircleCheckBigIcon,
+  CircleXIcon,
+  DollarSign,
+  EyeOffIcon,
+  LogOut,
+  Settings,
+} from "lucide-react";
+
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuItem,
+} from "@/components/ui/sidebar";
+import React from "react";
+import ButtonComp from "./ButtonComp";
+
+const items = [
+  {
+    title: "Unseen Incidents",
+    url: "#",
+    icon: EyeOffIcon,
+  },
+  {
+    title: "Open Incidents",
+    url: "#",
+    icon: CircleXIcon,
+  },
+  {
+    title: "Closed Incidents",
+    url: "#",
+    icon: CircleCheckBigIcon,
+  },
+];
+
+const items_footer = [
+  { title: "Settings", url: "", icon: Settings },
+  { title: "Billing", url: "", icon: DollarSign },
+  { title: "Log Out", url: "", icon: LogOut },
+];
+
+export function AppSidebar({
+  selected,
+  setSelected,
+}: {
+  selected: string;
+  setSelected: React.Dispatch<React.SetStateAction<string>>;
+}) {
+  return (
+    <Sidebar variant="inset" className="p-5">
+      <SidebarContent className="overflow-hidden">
+        <SidebarHeader className="mb-4">logo aayega</SidebarHeader>
+        <SidebarMenu className="gap-2.5">
+          {items.map((item) => (
+            <SidebarMenuItem key={item.title}>
+              <ButtonComp
+                variant={selected === item.title ? "default" : "ghost"}
+                className="flex flex-row w-full justify-start gap-5 text-md cursor-pointer"
+                onClick={() => {
+                  setSelected(item.title);
+                }}
+              >
+                <item.icon className="size-4.5" />
+                {item.title}
+              </ButtonComp>
+            </SidebarMenuItem>
+          ))}
+        </SidebarMenu>
+      </SidebarContent>
+      <SideBarFooterComp selected={selected} setSelected={setSelected} />
+    </Sidebar>
+  );
+}
+
+const SideBarFooterComp = ({
+  selected,
+  setSelected,
+}: {
+  selected: string;
+  setSelected: React.Dispatch<React.SetStateAction<string>>;
+}) => {
+  return (
+    <SidebarFooter>
+      <SidebarMenu className="gap-2.5">
+        {items_footer.map((item) => (
+          <SidebarMenuItem>
+            <ButtonComp
+              variant={selected === item.title ? "default" : "ghost"}
+              className="flex flex-row w-full justify-start gap-5 text-md cursor-pointer"
+              onClick={() => {
+                setSelected(item.title);
+              }}
+            >
+              <item.icon className="size-4.5" />
+              {item.title}
+            </ButtonComp>
+          </SidebarMenuItem>
+        ))}
+      </SidebarMenu>
+    </SidebarFooter>
+  );
+};
