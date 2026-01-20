@@ -18,9 +18,14 @@ export const updateIncidentPriority = async (req: Request, res: Response) => {
       return;
     }
 
+    const isIncidentClosed = validateData.data.incidentPriority === 'Closed';
+
     await prisma.incident.update({
       where: { id: validateData.data.incidentId },
-      data: { incidentPriority: validateData.data.incidentPriority },
+      data: {
+        incidentPriority: validateData.data.incidentPriority,
+        incidentResolveDateAndTime: isIncidentClosed ? new Date() : null,
+      },
     });
 
     res.status(HttpStatus.OK).json({
