@@ -1,6 +1,6 @@
-import { prisma } from "../../database/prismaClient";
-import { beepitt } from "../../utils/beepitt.util";
-import { kafka } from "./kafkaClient";
+import { prisma } from "../../../database/prismaClient";
+import { beepitt } from "../../../utils/beepitt.util";
+import { kafka } from "../kafkaClient";
 
 const consumer = kafka.consumer({
   groupId: `message-sender-consumer-${process.pid}`,
@@ -38,7 +38,7 @@ const consumeMessageForMessageSender = async () => {
           return;
         }
 
-        beepitt(contact.discordChatIds, contact.telegramChatIds);
+        await beepitt(contact.discordChatIds, contact.telegramChatIds);
 
         await consumer.commitOffsets([
           {

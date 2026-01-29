@@ -1,14 +1,11 @@
-import { Request, Response } from 'express';
-import { prisma } from '../database/prismaClient';
-import { TimeZoneAndPreferencesUpdateType } from '../types/dataTypes';
-import { ERROR_CODES, HttpStatus } from '../types/errorCodes';
+import { Request, Response } from "express";
+import { prisma } from "../../database/prismaClient";
+import { ProfileUpdateType } from "../../types/dataTypes";
+import { ERROR_CODES, HttpStatus } from "../../types/errorCodes";
 
-export const updateTimeZoneAndPreferencesController = async (
-  req: Request,
-  res: Response,
-) => {
+export const updateProfileController = async (req: Request, res: Response) => {
   try {
-    const validateData = TimeZoneAndPreferencesUpdateType.safeParse(req.body);
+    const validateData = ProfileUpdateType.safeParse(req.body);
     if (!validateData.success) {
       res.status(HttpStatus.BAD_REQUEST).json({
         success: false,
@@ -20,9 +17,15 @@ export const updateTimeZoneAndPreferencesController = async (
       return;
     }
 
+    console.log(validateData.data)
+    console.log(req.userId)
+
     const user = await prisma.user.update({
       where: { id: req.userId },
-      data: validateData.data,
+      data: {
+        firstName: validateData.data.firstName,
+        lastName: validateData.data.lastName,
+      },
     });
 
     res.status(HttpStatus.OK).json({
@@ -30,8 +33,6 @@ export const updateTimeZoneAndPreferencesController = async (
     });
     return;
   } catch (error) {
-    console.error('Error updating user preferences:', error);
-
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
       success: false,
       error: {

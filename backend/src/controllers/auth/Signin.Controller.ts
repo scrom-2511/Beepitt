@@ -1,9 +1,9 @@
-import bcrypt from "bcrypt";
-import { Request, Response } from "express";
-import jwt from "jsonwebtoken";
-import { prisma } from "../database/prismaClient";
-import { LoginType } from "../types/dataTypes";
-import { ERROR_CODES, HttpStatus } from "../types/errorCodes";
+import bcrypt from 'bcrypt';
+import { Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
+import { prisma } from '../../database/prismaClient';
+import { LoginType } from '../../types/dataTypes';
+import { ERROR_CODES, HttpStatus } from '../../types/errorCodes';
 
 export const signinController = async (req: Request, res: Response) => {
   try {
@@ -25,7 +25,7 @@ export const signinController = async (req: Request, res: Response) => {
     });
 
     if (!data) {
-      res.status(HttpStatus.UNAUTHORIZED).json({
+      res.status(HttpStatus.NOT_FOUND).json({
         success: false,
         error: {
           id: ERROR_CODES.USER_NOT_FOUND.id,
@@ -36,21 +36,21 @@ export const signinController = async (req: Request, res: Response) => {
       return;
     }
 
-    if (data.otpVerified === false) {
-      res.status(HttpStatus.UNAUTHORIZED).json({
-        success: false,
-        error: {
-          id: ERROR_CODES.OTP_VERIFICATION_NEEDED.id,
-          code: ERROR_CODES.OTP_VERIFICATION_NEEDED.code,
-          message: ERROR_CODES.OTP_VERIFICATION_NEEDED.message,
-        },
-      });
-      return;
-    }
+    // if (data.otpVerified === false) {
+    //   res.status(HttpStatus.UNAUTHORIZED).json({
+    //     success: false,
+    //     error: {
+    //       id: ERROR_CODES.OTP_VERIFICATION_NEEDED.id,
+    //       code: ERROR_CODES.OTP_VERIFICATION_NEEDED.code,
+    //       message: ERROR_CODES.OTP_VERIFICATION_NEEDED.message,
+    //     },
+    //   });
+    //   return;
+    // }
 
     const isPasswordValid = await bcrypt.compare(
       validateData.data.password,
-      data.password,
+      data.password!,
     );
 
     if (!isPasswordValid) {
@@ -68,18 +68,20 @@ export const signinController = async (req: Request, res: Response) => {
     const jwtPayload = { id: data.id };
     const jwtSecret = process.env.JWT_SECRET;
 
-    const authToken = jwt.sign(jwtPayload, jwtSecret!, { expiresIn: "30d" });
+    const authToken = jwt.sign(jwtPayload, jwtSecret!, { expiresIn: '30d' });
+
+    console.log('reached here');
 
     res
-      .cookie("authToken", authToken, {
+      .cookie('authToken', authToken, {
         httpOnly: true,
-        sameSite: "strict",
-        maxAge: 30 * 24 * 60 * 60 * 1000,
+        secure: true,
+        sameSite: 'none',
+        maxAge: 24 * 60 * 60 * 1000,
       })
-      .status(HttpStatus.OK)
-      .json({
-        success: true,
-      });
+      .status(HttpStatus.CREATED)
+      .json({ success: true });
+
     return;
   } catch (error) {
     console.error(error);

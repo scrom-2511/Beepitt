@@ -11,19 +11,15 @@ export const isLoggedIn = (req: Request, res: Response, next: NextFunction) => {
     return;
   }
 
-  const { authToken } = req.cookies;
-
-  if (!authToken) {
-    res.status(HttpStatus.UNAUTHORIZED).json({
-      success: false,
-      error: ERROR_CODES.UNAUTHORIZED,
-    });
-    return;
+  let { authToken } = req.cookies;
+  if(!authToken){
+    authToken = undefined
   }
 
   try {
     const decoded = jwt.verify(authToken, jwtSecret) as JwtPayload;
-    req.userId = decoded.userId;
+    req.userId = decoded.id;
+    console.log(req.userId);
     next();
   } catch (err) {
     res.status(HttpStatus.UNAUTHORIZED).json({

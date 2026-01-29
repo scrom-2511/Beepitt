@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { ERROR_CODES, HttpStatus } from "../types/errorCodes";
+import { ERROR_CODES, HttpStatus } from "../../types/errorCodes";
 
 export const checkLoggedIn = (req: Request, res: Response) => {
   if (!req.userId) {

@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 export const LoginType = z.object({
   email: z.string().email(),
@@ -7,7 +7,7 @@ export const LoginType = z.object({
 
 export const SignupType = z.object({
   email: z.string().email(),
-  username: z.string().email(),
+  username: z.string(),
   password: z.string(),
 });
 
@@ -28,24 +28,27 @@ export const ProfileUpdateType = z.object({
   lastName: z.string(),
 });
 
-export const DateFormat = z.enum([
-  "YYYY-MM-DD",
-  "MM/DD/YYYY",
-  "DD/MM/YYYY",
-  "YYYY/MM/DD",
-  "MM-DD-YYYY",
-  "DD-MM-YYYY",
-]);
-
 export const TimeZoneAndPreferencesUpdateType = z.object({
   city: z.string(),
-  timeZone: z.string().refine((tz) => {
+  timezone: z.string().refine((tz) => {
     try {
       Intl.DateTimeFormat(undefined, { timeZone: tz });
       return true;
-    } catch (error) {
+    } catch {
       return false;
     }
   }),
-  dateFormat: DateFormat,
+});
+
+export const OtpValidateType = z.object({
+  otp: z.string(),
+});
+
+export const RazorPayCreateOrderType = z.object({
+  id: z.string(),
+});
+
+export const UpdateIncidentPriorityType = z.object({
+  incidentId: z.number(),
+  incidentPriority: z.enum(['Unseen', 'Critical', 'High', 'Low', 'Closed']),
 });

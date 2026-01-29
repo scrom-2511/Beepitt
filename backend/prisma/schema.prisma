@@ -13,17 +13,15 @@ datasource db {
   provider = "postgresql"
 }
 
-enum ErrorPriority {
-  Undefined
-  Critical
-  High
-  Low
-  Fixed
-}
-
 enum SubscriptionTier {
   Free
   Premium
+}
+
+enum AuthProvider {
+  LOCAL
+  GOOGLE
+  DISCORD
 }
 
 model User {
@@ -37,23 +35,42 @@ model User {
   password          String
   city              String?
   timezone          String?
-  dateAndFormat     String?
-  createAt          DateTime         @default(now())
-  updateAt          DateTime         @updatedAt
   subscription_tier SubscriptionTier
-  errors            Errors[]
-  contactDetails    ContactDetails[]
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  authAccounts   AuthAccount[]
+  incidents      Incident[]
+  contactDetails ContactDetails?
+  orders         Orders[]
 }
 
-model Errors {
-  id                      Int            @id @default(autoincrement())
-  errorName               String
-  errorDesc               String
-  errorPriority           ErrorPriority?
-  errorDateAndTime        DateTime       @default(now())
-  errorResolveDateAndTime DateTime?
-  userId                  Int
-  user                    User           @relation(fields: [userId], references: [id])
+model AuthAccount {
+  id         Int          @id @default(autoincrement())
+  provider   AuthProvider
+  providerId String       @unique
+  userId     Int
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+enum IncidentPriority {
+  Unseen
+  Critical
+  High
+  Low
+  Closed
+}
+
+model Incident {
+  id                         Int               @id @default(autoincrement())
+  incidentName               String
+  incidentDesc               String
+  incidentPriority           IncidentPriority?
+  incidentDateAndTime        DateTime          @default(now())
+  incidentResolveDateAndTime DateTime?
+  userId                     Int
+  user                       User              @relation(fields: [userId], references: [id])
 }
 
 model ContactDetails {
@@ -62,4 +79,25 @@ model ContactDetails {
   discordChatIds  String[]
   userId          Int      @unique
   user            User     @relation(fields: [userId], references: [id])
+}
+
+enum OrderStatus {
+  Started
+  Pending
+  Frontend_Success
+  Successful
+  Failed
+}
+
+model Orders {
+  id                Int         @id @default(autoincrement())
+  razorPayOrderId   String      @unique
+  razorPayPaymentId String?
+  amount            Int
+  status            OrderStatus
+  note              String?
+  userId            Int
+  user              User        @relation(fields: [userId], references: [id])
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @default(now()) @updatedAt
 }

@@ -1,10 +1,16 @@
 import { Router } from 'express';
-import { checkLoggedIn } from '../controllers/checkLoggedIn';
-import { otpValidateController } from '../controllers/otpValidator.controller';
-import { signinController } from '../controllers/Signin.Controller';
-import { signupController } from '../controllers/Signup.Controller';
-import { updateProfileController } from '../controllers/updateProfileController';
-import { updateTimeZoneAndPreferencesController } from '../controllers/updateTimeZoneAndPreferences.controller';
+import { checkLoggedIn } from '../controllers/auth/checkLoggedIn';
+import { googleAuthController } from '../controllers/auth/googleAuth.controller';
+import { otpValidateController } from '../controllers/auth/otpValidator.controller';
+import { signinController } from '../controllers/auth/Signin.Controller';
+import { signupController } from '../controllers/auth/Signup.Controller';
+import { getAllClosedIncidentsByUserId } from '../controllers/incidents/getIncidents/getAllClosedIncidentsByUserId.controller';
+import { getAllOpenIncidentsByUserId } from '../controllers/incidents/getIncidents/getAllOpenIncidentsByUserId.controller';
+import { getAllUnseenErrorsByUserId } from '../controllers/incidents/getIncidents/getAllUnseenErrorsByUserId.controller';
+import { razorpayCreateOrderController } from '../controllers/payment/razorpayCreateOrder.controller';
+import { getProfileDetailsAndPreferncesController } from '../controllers/profile/getProfileDetailsAndPrefernces.controller';
+import { updateProfileController } from '../controllers/profile/updateProfileController';
+import { updateTimeZoneAndPreferencesController } from '../controllers/profile/updateTimeZoneAndPreferences.controller';
 import { isLoggedIn } from '../middlewares/isLoggedIn';
 
 export const userRouter = Router();
@@ -12,13 +18,43 @@ export const userRouter = Router();
 userRouter.get('/isLoggedIn', isLoggedIn, checkLoggedIn);
 userRouter.post('/signup', signupController);
 userRouter.post('/signin', signinController);
-// userRouter.post("/validateOtp", (req, res) => {
-//   validateOtpController(req, res);
-// });
-userRouter.post('/profileDetailsUpdate', isLoggedIn, updateProfileController);
+userRouter.post('/otpValidator', isLoggedIn, otpValidateController);
+userRouter.post('/googleAuth', googleAuthController);
+
+userRouter.post('/updateProfileDetails', isLoggedIn, updateProfileController);
+userRouter.post('/updateTimeZoneAndPreferences', isLoggedIn, updateTimeZoneAndPreferencesController)
+userRouter.get("/getProfileDetailsAndPreferences", isLoggedIn, getProfileDetailsAndPreferncesController);
 userRouter.post(
   '/updateTimeZoneAndPreferences',
   isLoggedIn,
   updateTimeZoneAndPreferencesController,
 );
-userRouter.post('/otpValidator', isLoggedIn, otpValidateController);
+
+userRouter.post(
+  '/razorPayCreateOrder',
+  isLoggedIn,
+  razorpayCreateOrderController,
+);
+
+userRouter.get('/getUnseenIncidents', isLoggedIn, getAllUnseenErrorsByUserId);
+userRouter.get('/getOpenIncidents', isLoggedIn, getAllOpenIncidentsByUserId);
+userRouter.get(
+  '/getClosedIncidents',
+  isLoggedIn,
+  getAllClosedIncidentsByUserId,
+);
+
+
+userRouter.get('/getmyip', (req, res) => {
+  console.log(req.headers['x-forwarded-for']);
+  const ips = (req.headers['x-forwarded-for'] || req.socket.remoteAddress)
+    ?.toString()
+    .split(',');
+  const ipv4 = ips?.find((ip) => ip.includes('.'));
+  const ipv6 = ips?.find((ip) => ip.includes(':'));
+
+  const ip = ipv4 || ipv6 || null;
+  console.log(ip);
+
+  res.send({ ipv4, ipv6 });
+});

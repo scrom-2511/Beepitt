@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
-import { verifyOtp } from '../services/redis/otpManager.redis';
-import { OtpValidateType } from '../types/dataTypes';
-import { ERROR_CODES, HttpStatus } from '../types/errorCodes';
+import { prisma } from '../../database/prismaClient';
+import { verifyOtp } from '../../services/redis/otpManager.redis';
+import { OtpValidateType } from '../../types/dataTypes';
+import { ERROR_CODES, HttpStatus } from '../../types/errorCodes';
 
 export const otpValidateController = async (req: Request, res: Response) => {
   try {
@@ -16,6 +17,8 @@ export const otpValidateController = async (req: Request, res: Response) => {
       });
     }
 
+    console.log(req.userId)
+
     if (!req.userId) {
       return res.status(HttpStatus.UNAUTHORIZED).json({
         success: false,
@@ -25,6 +28,8 @@ export const otpValidateController = async (req: Request, res: Response) => {
         },
       });
     }
+
+    console.log(req.userId, validateData.data.otp)
 
     const isValid = await verifyOtp(req.userId, validateData.data.otp);
 
@@ -37,6 +42,11 @@ export const otpValidateController = async (req: Request, res: Response) => {
         },
       });
     }
+
+    await prisma.user.update({
+      where: { id: req.userId },
+      data: { otpVerified: true },
+    });
 
     return res.status(HttpStatus.OK).json({
       success: true,
