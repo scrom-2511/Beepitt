@@ -1,23 +1,17 @@
-import type { AuthStep } from "@/pages/Authentication";
+import { useAuthState } from "@/hooks/useAuthState";
 import { otpValidatorHandler } from "@/requestHandler/auth/OtpValidator.ReqHandler";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import ButtonComp from "../ButtonComp";
-import { CardDescription, CardTitle } from "../ui/card";
+import { Card, CardContent, CardFooter } from "../ui/card";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "../ui/input-otp";
+import AuthHeader from "./AuthHeader";
 
-const OtpComponent = ({
-  setStep,
-}: {
-  setStep: React.Dispatch<React.SetStateAction<AuthStep>>;
-}) => {
+const OtpComponent = () => {
   const [otpValue, setOtpValue] = useState<string>("");
   const maxLength = 4;
-  const {
-    mutate: otpValidator,
-    data,
-    isPending,
-  } = useMutation({
+  const { setStep } = useAuthState();
+  const { mutate: otpValidator, isPending } = useMutation({
     mutationFn: otpValidatorHandler,
     onSuccess: (res) => {
       if (res.success) {
@@ -27,15 +21,14 @@ const OtpComponent = ({
     },
   });
   return (
-    <div className="h-full w-full flex flex-col justify-between px-16 py-32">
+    <Card className="h-full w-full flex flex-col justify-between px-16 py-32">
       <div className="flex flex-col">
-        <CardTitle className="text-6xl font-montserrat font-medium text-foreground">
-          Verify Code
-        </CardTitle>
-        <CardDescription className="font-montserrat mt-4 mb-20">
-          We sent you a verification code to you mail address
-        </CardDescription>
-        <InputOTP
+        <AuthHeader
+          title="Verify Code"
+          description="We sent you a verification code to you mail address"
+        />
+        <CardContent>
+          <InputOTP
           maxLength={maxLength}
           className="h-full w-full"
           value={otpValue}
@@ -43,24 +36,25 @@ const OtpComponent = ({
             if (value.length === maxLength) {
             }
             setOtpValue(value);
-            console.log(otpValue);
           }}
         >
           <InputOTPGroup className="text-foreground h-full w-full">
-            <InputOTPSlot index={0} />
-            <InputOTPSlot index={1} />
-            <InputOTPSlot index={2} />
-            <InputOTPSlot index={3} />
+            {[0, 1, 2, 3].map((el) => (
+              <InputOTPSlot index={el} />
+            ))}
           </InputOTPGroup>
         </InputOTP>
+        </CardContent>
       </div>
-      <ButtonComp
+      <CardFooter>
+        <ButtonComp
         variant={isPending ? "secondary" : "default"}
         onClick={() => otpValidator({ otp: otpValue })}
       >
         {isPending ? "Checking otp" : "Submit"}
       </ButtonComp>
-    </div>
+      </CardFooter>
+    </Card>
   );
 };
 

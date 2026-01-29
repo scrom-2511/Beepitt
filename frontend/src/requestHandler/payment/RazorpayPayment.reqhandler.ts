@@ -30,7 +30,7 @@ export const razorPayCreateOrderHandler = async (
 ): Promise<razorPayResponse> => {
   try {
     const res = await axios.post(
-      "http://localhost:3000/user/razorPayCreateOrder",
+      "https://francisco-unscholarlike-punctually.ngrok-free.dev/user/razorPayCreateOrder",
       data,
       {
         withCredentials: true,

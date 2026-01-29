@@ -1,9 +1,11 @@
 import { getClosedIncidentsHandler } from "@/requestHandler/incidents/getIncidents/getClosedIncidents.reqhandler";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import ButtonComp from "./ButtonComp";
-import { Loading } from "./Loading";
-import { Button } from "./ui/button";
+import { CircleAlert, PartyPopper } from "lucide-react";
+import { toast } from "sonner";
+import ButtonComp from "../ButtonComp";
+import { Loading } from "../Loading";
+import { Button } from "../ui/button";
 import {
   Card,
   CardContent,
@@ -11,7 +13,14 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "./ui/card";
+} from "../ui/card";
+import {
+  Empty,
+  EmptyContent,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "../ui/empty";
 const ClosedIncidents = () => {
   return <ErrorCardsSection />;
 };
@@ -23,10 +32,48 @@ const ErrorCardsSection = () => {
     data: incident_card_items,
     isLoading,
     isError,
+    error,
+    refetch,
   } = useQuery({
     queryKey: ["closedIncidents"],
     queryFn: getClosedIncidentsHandler,
   });
+
+  if (isError) {
+    toast.error(error.message);
+    return (
+      <Empty className="h-full">
+        <EmptyHeader className="flex flex-row items-center justify-center">
+          <EmptyMedia variant="icon" className="m-0">
+            <CircleAlert color="red" />
+          </EmptyMedia>
+          <EmptyTitle className="text-foreground ">
+            Error fetching data
+          </EmptyTitle>
+        </EmptyHeader>
+        <EmptyContent>
+          <ButtonComp className="w-50 font-bold" onClick={() => refetch()}>
+            Refetch
+          </ButtonComp>
+        </EmptyContent>
+      </Empty>
+    );
+  }
+
+  if (incident_card_items?.length === 0) {
+    return (
+      <Empty className="h-full">
+        <EmptyHeader className="flex flex-row items-center justify-center">
+          <EmptyMedia variant="icon" className="m-0">
+            <PartyPopper className="text-muted-foreground" />
+          </EmptyMedia>
+          <EmptyTitle className="text-muted-foreground">
+            Woohoo, zero closed incidents!
+          </EmptyTitle>
+        </EmptyHeader>
+      </Empty>
+    );
+  }
 
   if (isLoading)
     return (
@@ -36,7 +83,7 @@ const ErrorCardsSection = () => {
     );
 
   return (
-    <section className="grid grid-cols-3 p-5 gap-5">
+    <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 p-5 gap-5">
       {incident_card_items?.map((item) => (
         <motion.div
           initial={{ y: 50, opacity: 0 }}

@@ -11,9 +11,8 @@ export interface Incident {
 
 export const getOpenIncidentsHandler = async (): Promise<Incident[]> => {
   try {
-    const res = await axios.post(
-      "http://localhost:3000/user/getOpenIncidents",
-      {},
+    const res = await axios.get(
+      "https://francisco-unscholarlike-punctually.ngrok-free.dev/user/getOpenIncidents",
       { withCredentials: true },
     );
 
@@ -23,6 +22,7 @@ export const getOpenIncidentsHandler = async (): Promise<Incident[]> => {
 
     throw new Error(res.data.error?.message || "Failed to fetch incidents");
   } catch (err: any) {
+    console.log(err)
     if (axios.isAxiosError(err)) {
       throw new Error(err.response?.data?.error?.message || err.message);
     }

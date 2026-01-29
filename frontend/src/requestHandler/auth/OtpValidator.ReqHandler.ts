@@ -1,28 +1,15 @@
 import axios from "axios";
 
-export interface otpValidatorRequest {
+export interface OtpValidatorRequest {
   otp: string;
 }
 
-type otpValidatorResponse =
-  | { success: true }
-  | {
-      success: false;
-      data: {
-        error: {
-          id: number;
-          code: string;
-          message: string;
-        };
-      };
-    };
-
 export const otpValidatorHandler = async (
-  data: otpValidatorRequest,
-): Promise<otpValidatorResponse> => {
+  data: OtpValidatorRequest,
+): Promise<void> => {
   try {
     const res = await axios.post(
-      "http://localhost:3000/user/otpValidator",
+      "https://francisco-unscholarlike-punctually.ngrok-free.dev/user/otpValidator",
       data,
       {
         withCredentials: true,
@@ -30,32 +17,14 @@ export const otpValidatorHandler = async (
     );
 
     if (res.data.success) {
-      return { success: true };
+      return;
     }
 
-    return {
-      success: false,
-      data: {
-        error: res.data.error,
-      },
-    };
+    throw new Error(res.data.error?.message);
   } catch (err) {
     if (axios.isAxiosError(err)) {
-      const data = err.response?.data;
-      if (data && !data.success) {
-        return { success: false, data };
-      }
+      throw new Error(err.response?.data?.error?.message || err.message);
     }
-
-    return {
-      success: false,
-      data: {
-        error: {
-          id: 0,
-          code: "UNKNOWN",
-          message: "There was an error, please try again.",
-        },
-      },
-    };
+    throw new Error("There was an unknown error, please try again.");
   }
 };

@@ -9,7 +9,7 @@ export const googleAuthHandler = async (
 ): Promise<void> => {
   try {
     const res = await axios.post(
-      "http://localhost:3000/user/googleAuth",
+      "https://francisco-unscholarlike-punctually.ngrok-free.dev/user/googleAuth",
       data,
       { withCredentials: true },
     );

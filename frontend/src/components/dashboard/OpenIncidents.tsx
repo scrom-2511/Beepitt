@@ -1,11 +1,14 @@
+import type { Incident } from "@/requestHandler/incidents/getIncidents/getOpenIncidents.reqhandler";
 import { getOpenIncidentsHandler } from "@/requestHandler/incidents/getIncidents/getOpenIncidents.reqhandler";
-import { useQuery } from "@tanstack/react-query";
+import { updateIncidentPriorityHandler } from "@/requestHandler/incidents/updateIncidents/updateIncidentPriority.reqhandler";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { CircleX } from "lucide-react";
-import { useState } from "react";
-import ButtonComp from "./ButtonComp";
-import { Loading } from "./Loading";
-import { Button } from "./ui/button";
+import { CircleAlert, CircleX, PartyPopper } from "lucide-react";
+import { useCallback, useState } from "react";
+import { toast } from "sonner";
+import ButtonComp from "../ButtonComp";
+import { Loading } from "../Loading";
+import { Button } from "../ui/button";
 import {
   Card,
   CardContent,
@@ -13,7 +16,14 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "./ui/card";
+} from "../ui/card";
+import {
+  Empty,
+  EmptyContent,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "../ui/empty";
 
 export const OpenIncidents = () => {
   return (
@@ -41,7 +51,7 @@ const FilterSection = () => {
             className={`flex-1 text-foreground w-full cursor-pointer p-0 h-8 ${
               item.title === selected ? "w-48" : ""
             }`}
-          onClick={() =>
+            onClick={() =>
               setSelected((prev) => (item.title === prev ? "" : item.title))
             }
           >
@@ -68,10 +78,71 @@ const IncidentCardsSection = () => {
     data: incident_card_items,
     isLoading,
     isError,
+    error,
+    refetch,
   } = useQuery({
     queryKey: ["openIncidents"],
     queryFn: getOpenIncidentsHandler,
   });
+  const queryClient = useQueryClient();
+
+  const {
+    mutate: updateIncidentPriority,
+    isPending,
+    data,
+  } = useMutation({
+    mutationFn: updateIncidentPriorityHandler,
+    onSuccess: (_, variables) => {
+      queryClient.setQueryData(["openIncidents"], (oldData: Incident[]) => {
+        return oldData.filter(
+          (incident) => incident.id !== variables.incidentId,
+        );
+      });
+    },
+  });
+
+  const onClickToUpdatePriority = useCallback(
+    (incidentId: number) => {
+      updateIncidentPriority({ newPriority: "Closed", incidentId });
+    },
+    [updateIncidentPriority],
+  );
+
+  if (isError) {
+    toast.error(error.message);
+    return (
+      <Empty className="h-full">
+        <EmptyHeader className="flex flex-row items-center justify-center">
+          <EmptyMedia variant="icon" className="m-0">
+            <CircleAlert color="red" />
+          </EmptyMedia>
+          <EmptyTitle className="text-foreground ">
+            Error fetching data
+          </EmptyTitle>
+        </EmptyHeader>
+        <EmptyContent>
+          <ButtonComp className="w-50 font-bold" onClick={() => refetch()}>
+            Refetch
+          </ButtonComp>
+        </EmptyContent>
+      </Empty>
+    );
+  }
+
+  if (incident_card_items?.length === 0) {
+    return (
+      <Empty className="h-full">
+        <EmptyHeader className="flex flex-row items-center justify-center">
+          <EmptyMedia variant="icon" className="m-0">
+            <PartyPopper className="text-muted-foreground" />
+          </EmptyMedia>
+          <EmptyTitle className="text-muted-foreground">
+            Woohoo, zero open incidents!
+          </EmptyTitle>
+        </EmptyHeader>
+      </Empty>
+    );
+  }
 
   if (isLoading)
     return (
@@ -81,15 +152,16 @@ const IncidentCardsSection = () => {
     );
 
   return (
-    <section className="grid grid-cols-3 p-5 gap-5">
-      {incident_card_items?.map((item) => (
+    <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 p-5 gap-5">
+      {incident_card_items?.map((item, index) => (
         <motion.div
           initial={{ y: 50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.5, ease: "easeIn" }}
+          transition={{ delay: index * 0.1, ease: "easeIn" }}
           className="cursor-pointer"
+          key={item.id}
         >
-          <Card className="bg-card p-10">
+          <Card key={item.id} className="bg-card p-10">
             <CardHeader className="p-0">
               <CardTitle className="line-clamp-2">
                 {item.incidentName}
@@ -130,7 +202,7 @@ const IncidentCardsSection = () => {
               </div>
               <ButtonComp
                 className="h-10 w-full font-semibold cursor-pointer"
-                onClick={() => {}}
+                onClick={() => onClickToUpdatePriority(item.id)}
               >
                 Mark As Fixed
               </ButtonComp>

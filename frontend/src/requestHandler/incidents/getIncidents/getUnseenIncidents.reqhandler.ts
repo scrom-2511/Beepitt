@@ -11,9 +11,8 @@ export interface Incident {
 
 export const getUnseenIncidentsHandler = async (): Promise<Incident[]> => {
   try {
-    const res = await axios.post(
-      "http://localhost:3000/user/getUnseenIncidents",
-      {},
+    const res = await axios.get(
+      "https://francisco-unscholarlike-punctually.ngrok-free.dev/user/getUnseenIncidents",
       { withCredentials: true },
     );
 

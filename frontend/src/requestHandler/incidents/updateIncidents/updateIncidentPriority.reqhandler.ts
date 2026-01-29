@@ -1,13 +1,9 @@
 import axios from "axios";
 
-export type UpdateIncidentPriorityEnum =
-  | "Low"
-  | "Critical"
-  | "High"
-  | "Closed"
-  | "Fixed";
+export type UpdateIncidentPriorityEnum = "Low" | "Critical" | "High" | "Closed";
 
 export interface UpdateIncidentPriorityBody {
+  incidentId: number
   newPriority: UpdateIncidentPriorityEnum;
 }
 
@@ -16,7 +12,7 @@ export const updateIncidentPriorityHandler = async (
 ): Promise<void> => {
   try {
     const res = await axios.post(
-      "http://localhost:3000/user/updateIncidentPriority",
+      "https://francisco-unscholarlike-punctually.ngrok-free.dev/user/updateIncidentPriority",
       data,
       { withCredentials: true },
     );

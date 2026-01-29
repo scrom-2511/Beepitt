@@ -15,8 +15,9 @@ import {
   SidebarMenu,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import type { DashboardState } from "@/pages/Dashboard";
 import React from "react";
-import ButtonComp from "./ButtonComp";
+import ButtonComp from "../ButtonComp";
 
 const items = [
   {
@@ -47,7 +48,7 @@ export function AppSidebar({
   setSelected,
 }: {
   selected: string;
-  setSelected: React.Dispatch<React.SetStateAction<string>>;
+  setSelected: React.Dispatch<React.SetStateAction<DashboardState>>;
 }) {
   return (
     <Sidebar variant="inset" className="p-5">
@@ -60,7 +61,7 @@ export function AppSidebar({
                 variant={selected === item.title ? "default" : "ghost"}
                 className="flex flex-row w-full justify-start gap-5 text-md cursor-pointer"
                 onClick={() => {
-                  setSelected(item.title);
+                  setSelected(item.title as DashboardState);
                 }}
               >
                 <item.icon className="size-4.5" />
@@ -80,7 +81,7 @@ const SideBarFooterComp = ({
   setSelected,
 }: {
   selected: string;
-  setSelected: React.Dispatch<React.SetStateAction<string>>;
+  setSelected: React.Dispatch<React.SetStateAction<DashboardState>>;
 }) => {
   return (
     <SidebarFooter>
@@ -91,7 +92,7 @@ const SideBarFooterComp = ({
               variant={selected === item.title ? "default" : "ghost"}
               className="flex flex-row w-full justify-start gap-5 text-md cursor-pointer"
               onClick={() => {
-                setSelected(item.title);
+                setSelected(item.title as DashboardState);
               }}
             >
               <item.icon className="size-4.5" />

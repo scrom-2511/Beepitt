@@ -1,19 +1,20 @@
 import type { VariantProps } from "class-variance-authority";
 import { motion } from "framer-motion";
+import { memo } from "react";
 import { Button, buttonVariants } from "./ui/button";
 
 const ButtonComp = ({
   children,
-  className = "flex-1 w-full py-6 font-semibold cursor-pointer",
+  className = "flex-1 w-full py-5 sm:py-6 font-semibold cursor-pointer",
   variant = "default",
   size = "default",
   asChild = false,
-  onClick, // optional
+  onClick,
   ...props
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
-    onClick?: React.MouseEventHandler<HTMLButtonElement>; // optional
+    onClick?: React.MouseEventHandler<HTMLButtonElement>;
   }) => {
   return (
     <motion.div
@@ -35,4 +36,4 @@ const ButtonComp = ({
   );
 };
 
-export default ButtonComp;
+export default memo(ButtonComp);
