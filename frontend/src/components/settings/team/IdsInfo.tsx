@@ -13,7 +13,7 @@ const IdsInfo = ({ chatIds }: { chatIds: string[] }) => {
               className="py-4 px-6 sm:py-6 text-foreground placeholder:text-xs sm:placeholder:text-sm mt-2 bg-input/30 rounded-2xl flex justify-between"
             >
               {chatId}
-              <Trash2 className="text-red-600"/>
+              <Trash2 className="hover:text-red-600 hover:cursor-pointer size-5"/>
             </div>
           </div>
         ))}
