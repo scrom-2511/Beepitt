@@ -8,17 +8,17 @@ const TeamSection = () => {
     {
       title: "Identifier Key",
       description:
-        "Identifier key for connecting team members through various channels.",
+        "To connect team members through various channels.",
       content: <IdentifierKeyComp />,
     },
     {
       title: "Telegram Notification IDs",
-      description: "All of your connected telegram chat ids.",
+      description: "Your connected telegram chat Ids.",
       content: <IdsInfo chatIds={["asdfdfas", "osmething", "kglajgdf"]}/>,
     },
     {
       title: "Discord ChatIds",
-      description: "All of your connected discord telegram chat ids.",
+      description: "Your connected discord chat Ids.",
       content: <IdsInfo chatIds={["asdfdfas", "osmething", "kglajgdf"]}/>,
     },
   ];
@@ -30,7 +30,7 @@ const TeamSection = () => {
 
           <div className="w-full h-auto rounded-2xl grid grid-rows-[100px_auto] mb-5">
             <div className="flex flex-col h-full w-full p-5 lg:p-10">
-              <h1 className="text-foreground text-xl mb-2">{section.title}</h1>
+              <h1 className="text-foreground text-xl mb-2 font-montserrat">{section.title}</h1>
               <p className="text-muted-foreground text-sm">
                 {section.description}
               </p>

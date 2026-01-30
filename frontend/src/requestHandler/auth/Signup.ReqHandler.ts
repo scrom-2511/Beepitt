@@ -4,6 +4,7 @@ export interface SignupRequest {
   email: string;
   username: string;
   password: string;
+  timezone: string
 }
 export const signupHandler = async (data: SignupRequest): Promise<void> => {
   try {

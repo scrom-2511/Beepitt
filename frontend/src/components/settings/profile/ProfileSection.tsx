@@ -41,7 +41,7 @@ const ProfileSection = () => {
 
           <div className="w-full h-auto rounded-2xl grid grid-rows-[100px_auto] mb-5">
             <div className="flex flex-col h-full w-full p-5 lg:p-10">
-              <h1 className="text-foreground text-xl mb-2">{section.title}</h1>
+              <h1 className="text-foreground text-xl mb-2 font-montserrat">{section.title}</h1>
               <p className="text-muted-foreground text-sm">
                 {section.description}
               </p>

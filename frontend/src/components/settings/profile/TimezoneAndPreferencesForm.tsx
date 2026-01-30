@@ -3,7 +3,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { ProfileDetailsAndPrefernces } from "@/requestHandler/settings/getProfileDetailsAndPreferences.reqhandler";
 import { updateTimeZoneAndPreferencesHandler } from "@/requestHandler/settings/preferencesAndCityUpdater.reqhandler";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@radix-ui/react-tooltip";
 import { useMutation } from "@tanstack/react-query";
+import { CircleQuestionMark } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -46,6 +52,12 @@ export const TimezoneAndPreferencesForm = ({
   });
 
   const onSubmit = (data: TimezoneFormValues) => {
+    try {
+      Intl.DateTimeFormat(undefined, { timeZone: data.timezone });
+    } catch (e) {
+      toast.error("Please provide an IANA-formatted time zone.")
+      return;
+    }
     updatePreferencesAndCity(data);
   };
 
@@ -63,7 +75,17 @@ export const TimezoneAndPreferencesForm = ({
           </div>
 
           <div className="flex-1">
-            <Label htmlFor="timezone">Timezone</Label>
+            <div className="flex gap-2">
+              <Label htmlFor="timezone">Timezone</Label>
+              <Tooltip>
+                <TooltipTrigger>
+                  <CircleQuestionMark className="size-4" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>IANA timeZone required. Eg: America/Chicago</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
             <Input
               id="timezone"
               className="py-4 sm:py-6 mt-2 text-foreground"
