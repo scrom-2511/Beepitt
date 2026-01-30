@@ -1,20 +1,25 @@
-import { Client, GatewayIntentBits } from "discord.js";
-import { validate as isUUID } from "uuid";
-import { prisma } from "../database/prismaClient.ts";
+import { Client, GatewayIntentBits, Partials } from 'discord.js';
+import { validate as isUUID } from 'uuid';
+import { prisma } from '../database/prismaClient';
 
 // Create a new Discord client with required intents
 export const discordClient = new Client({
   intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMessages,
     GatewayIntentBits.DirectMessageReactions,
     GatewayIntentBits.DirectMessages,
     GatewayIntentBits.MessageContent,
   ],
+  partials: [Partials.Channel],
 });
 
+console.log('discord file loaded');
+discordClient.on('ready', () => {
+  console.log('READY EVENT FIRED');
+});
+discordClient.login(process.env.DISCORD_SECRET_TOKEN);
+
 // Listen for new messages
-discordClient.on("messageCreate", async (msg) => {
+discordClient.on('messageCreate', async (msg) => {
   try {
     if (!msg.author.id) return; // If there is no author ID, return
     if (msg.author.bot) return; // If the message is from a bot, return
@@ -28,14 +33,14 @@ discordClient.on("messageCreate", async (msg) => {
     const msgText = msg.content;
 
     // If the message is "start", begin the linking process
-    if (msgText.trim().toLowerCase() === "start") {
-      await msg.reply("Send your identifier key");
+    if (msgText.trim().toLowerCase() === 'start') {
+      await msg.reply('Send your identifier key');
       return;
     }
 
     // If the message is not a valid UUID, return
     if (!isUUID(msgText.trim())) {
-      await msg.reply("Please provide a valid identifier key");
+      await msg.reply('Please provide a valid identifier key');
       return;
     }
 
@@ -51,7 +56,7 @@ discordClient.on("messageCreate", async (msg) => {
 
       // If no user is found, return
       if (!user) {
-        msg.reply("Wrong identifier key!");
+        msg.reply('Wrong identifier key!');
         return;
       }
 
@@ -77,20 +82,20 @@ discordClient.on("messageCreate", async (msg) => {
 
         // Prevent linking the same Discord account twice
         if (contact.discordChatIds.includes(chatId)) {
-          throw new Error("ALREADY_LINKED");
+          throw new Error('ALREADY_LINKED');
         }
 
         // Get the number of linked Discord accounts
         const count = contact.discordChatIds.length;
 
         // Enforce limit for Free users
-        if (user.subscription_tier === "Free" && count >= 1) {
-          throw new Error("FREE_LIMIT");
+        if (user.subscription_tier === 'Free' && count >= 1) {
+          throw new Error('FREE_LIMIT');
         }
 
         // Enforce limit for Premium users
-        if (user.subscription_tier === "Premium" && count >= 4) {
-          throw new Error("PREMIUM_LIMIT");
+        if (user.subscription_tier === 'Premium' && count >= 4) {
+          throw new Error('PREMIUM_LIMIT');
         }
 
         // Add the new Discord chat ID
@@ -103,26 +108,26 @@ discordClient.on("messageCreate", async (msg) => {
       });
 
       // Notify the user that linking was successful
-      await msg.reply("Discord account linked.");
+      await msg.reply('Discord account linked.');
       return;
     }
   } catch (error: any) {
     // Handle all the errors
     switch (error.message) {
-      case "ALREADY_LINKED":
-        await msg.reply("This Discord account is already linked.");
+      case 'ALREADY_LINKED':
+        await msg.reply('This Discord account is already linked.');
         break;
-      case "FREE_LIMIT":
-        await msg.reply("Upgrade to premium to add more members.");
+      case 'FREE_LIMIT':
+        await msg.reply('Upgrade to premium to add more members.');
         break;
-      case "PREMIUM_LIMIT":
+      case 'PREMIUM_LIMIT':
         await msg.reply(
-          "Maximum team members reached. Remove an existing one to add more.",
+          'Maximum team members reached. Remove an existing one to add more.',
         );
         break;
       default:
         console.error(error);
-        await msg.reply("Something went wrong. Please try again.");
+        await msg.reply('Something went wrong. Please try again.');
     }
   }
 });
@@ -132,7 +137,7 @@ export const discordBeep = async (discordChatIds: string[]) => {
     await Promise.allSettled(
       discordChatIds.map(async (chatId) => {
         const user = await discordClient.users.fetch(chatId);
-        await user.send("Your backend fked up man!");
+        await user.send('Your backend fked up man!');
       }),
     );
   } catch (error) {

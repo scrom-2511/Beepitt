@@ -4,6 +4,12 @@ import { ERROR_CODES, HttpStatus } from '../../types/errorCodes';
 
 export const getTeamInfoController = async (req: Request, res: Response) => {
   try {
+    console.log("hi there i reached here may a times sier")
+    console.log("hi there i reached here may a times sier")
+    console.log("hi there i reached here may a times sier")
+    console.log("hi there i reached here may a times sier")
+    console.log("hi there i reached here may a times sier")
+    console.log("hi there i reached here may a times sier")
     const userId = req.userId;
     if (!userId) {
       res.status(HttpStatus.UNAUTHORIZED).json({

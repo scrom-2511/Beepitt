@@ -40,6 +40,7 @@ const TeamSection = () => {
   ];
 
   if (isError) {
+    console.log(error)
     return <ErrorFetching error={error} refetch={refetch} />;
   }
 

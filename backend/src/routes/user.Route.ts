@@ -39,7 +39,7 @@ userRouter.post(
   updateTimeZoneAndPreferencesController,
 );
 
-userRouter.post('/getTeamInfo', isLoggedIn, getTeamInfoController);
+userRouter.get('/getTeamInfo', isLoggedIn, getTeamInfoController);
 
 userRouter.post(
   '/razorPayCreateOrder',

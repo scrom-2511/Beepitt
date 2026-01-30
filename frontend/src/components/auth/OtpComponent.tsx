@@ -14,10 +14,7 @@ const OtpComponent = () => {
   const { mutate: otpValidator, isPending } = useMutation({
     mutationFn: otpValidatorHandler,
     onSuccess: (res) => {
-      if (res.success) {
-        setStep("profile");
-      } else {
-      }
+      setStep("profile");
     },
   });
   return (

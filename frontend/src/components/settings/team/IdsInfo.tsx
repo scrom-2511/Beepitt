@@ -24,7 +24,7 @@ const IdsInfo = ({ chatIds }: { chatIds: string[] }) => {
   }
   return (
     <div className="flex flex-col gap-6 text-muted-foreground text-sm">
-      <div className="grid grid-rows-2 w-full gap-5">
+      <div className="grid w-full gap-5">
         {chatIds.map((chatId, index) => (
           <div key={chatId ?? index} className="flex-1">
             <Label htmlFor={`firstName-${index}`}>Id {index + 1}</Label>

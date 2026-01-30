@@ -2,7 +2,9 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express, { Express } from 'express';
 import { appRouter } from './routes/app.Route';
+import { appWebhook } from './routes/app.webhooks';
 import { userRouter } from './routes/user.Route';
+import { discordClient } from './utils/discordBeep.util';
 const app: Express = express();
 
 app.use(cookieParser());
@@ -17,7 +19,7 @@ app.use((req, res, next) => {
 app.use(
   cors({
     origin: [
-      "https://justin-delivers-final-newton.trycloudflare.com",
+      "https://filtering-designed-jun-mayor.trycloudflare.com",
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -29,12 +31,13 @@ app.get('/user/__debug', (req, res) => {
   res.send('THIS IS MY SERVER');
 });
 
+discordClient.once('clientReady', () => {
+  console.log(`Discord bot logged in as ${discordClient.user?.tag}`);
+});
+
 app.use('/user', userRouter);
 app.use('/app', appRouter);
-
-// await connectProducer();
-// await consumerConnect();
-// await consumerLocationDetector();
+app.use('/app/webhook', appWebhook);
 
 app.listen(3000, '0.0.0.0', () => {
   console.log('WSL server listening');

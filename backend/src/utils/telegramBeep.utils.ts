@@ -1,14 +1,14 @@
 import TelegramBot from "node-telegram-bot-api";
 import { prisma } from "../database/prismaClient";
 
-const token = process.env.TELEGRAM_BOT_ID!;
+const token = process.env.TELEGRAM_SECRET_TOKEN!;
 
 // Initialize Telegram bot in webhook mode
-const bot = new TelegramBot(token, { webHook: true });
+export const bot = new TelegramBot(token, { webHook: true });
 
 // Register webhook
-bot.setWebHook("https://bin.h00k.dev/23986b84-e793-4f0a-a956-f4e5413cf1c0", {
-  secret_token: "somthingiwilladd",
+bot.setWebHook("https://francisco-unscholarlike-punctually.ngrok-free.dev/app/webhook/telegramBot", {
+  secret_token: "somethiadf",
 });
 
 // Handle /start command

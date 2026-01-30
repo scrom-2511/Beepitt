@@ -9,6 +9,7 @@ export interface TeamInfoResponse {
 export const getTeamInfoHandler =
   async (): Promise<TeamInfoResponse> => {
     try {
+      console.log("bro i reached this part")
       const res = await axios.get(
         "https://francisco-unscholarlike-punctually.ngrok-free.dev/user/getTeamInfo",
         { withCredentials: true },

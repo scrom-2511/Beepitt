@@ -9,13 +9,13 @@ const IdentifierKeyComp = ({ identifierKey }: { identifierKey: string }) => {
           <Label htmlFor="identifier key">Identifier Key</Label>
           <div
             onMouseDown={async () => {
-              await navigator.clipboard.writeText("identifier key");
+              await navigator.clipboard.writeText(identifierKey);
               toast.success("Copied to clipboard");
             }}
             id="identifierKey"
             className="py-4 px-6 sm:py-6 text-foreground placeholder:text-xs sm:placeholder:text-sm mt-2 bg-input/30 rounded-2xl"
           >
-            inkajdfslk
+            {identifierKey}
           </div>
         </div>
       </div>
