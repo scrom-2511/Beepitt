@@ -11,6 +11,7 @@ import { razorpayCreateOrderController } from '../controllers/payment/razorpayCr
 import { getProfileDetailsAndPreferncesController } from '../controllers/profile/getProfileDetailsAndPrefernces.controller';
 import { updateProfileController } from '../controllers/profile/updateProfileController';
 import { updateTimeZoneAndPreferencesController } from '../controllers/profile/updateTimeZoneAndPreferences.controller';
+import { getTeamInfoController } from '../controllers/team/getTeamInfo.controller';
 import { isLoggedIn } from '../middlewares/isLoggedIn';
 
 export const userRouter = Router();
@@ -22,13 +23,23 @@ userRouter.post('/otpValidator', isLoggedIn, otpValidateController);
 userRouter.post('/googleAuth', googleAuthController);
 
 userRouter.post('/updateProfileDetails', isLoggedIn, updateProfileController);
-userRouter.post('/updateTimeZoneAndPreferences', isLoggedIn, updateTimeZoneAndPreferencesController)
-userRouter.get("/getProfileDetailsAndPreferences", isLoggedIn, getProfileDetailsAndPreferncesController);
 userRouter.post(
   '/updateTimeZoneAndPreferences',
   isLoggedIn,
   updateTimeZoneAndPreferencesController,
 );
+userRouter.get(
+  '/getProfileDetailsAndPreferences',
+  isLoggedIn,
+  getProfileDetailsAndPreferncesController,
+);
+userRouter.post(
+  '/updateTimeZoneAndPreferences',
+  isLoggedIn,
+  updateTimeZoneAndPreferencesController,
+);
+
+userRouter.post('/getTeamInfo', isLoggedIn, getTeamInfoController);
 
 userRouter.post(
   '/razorPayCreateOrder',
@@ -43,7 +54,6 @@ userRouter.get(
   isLoggedIn,
   getAllClosedIncidentsByUserId,
 );
-
 
 userRouter.get('/getmyip', (req, res) => {
   console.log(req.headers['x-forwarded-for']);

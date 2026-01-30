@@ -1,7 +1,7 @@
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 
-const IdentifierKeyComp = () => {
+const IdentifierKeyComp = ({ identifierKey }: { identifierKey: string }) => {
   return (
     <div className="flex flex-col gap-6 text-muted-foreground text-sm">
       <div className="flex w-full gap-5">
