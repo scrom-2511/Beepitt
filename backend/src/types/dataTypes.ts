@@ -9,6 +9,7 @@ export const SignupType = z.object({
   email: z.string().email(),
   username: z.string(),
   password: z.string(),
+  timezone: z.string(),
 });
 
 export const onErrorFromClientType = z.object({

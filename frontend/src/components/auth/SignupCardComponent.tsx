@@ -59,12 +59,8 @@ const SignupCardForm = () => {
   const { mutate: signup, isPending } = useMutation({
     mutationFn: signupHandler,
     onSuccess: (res) => {
-      if (res.success) {
-        setAnimate(false);
-        setStep("otp");
-      } else {
-        console.log("bad");
-      }
+      setAnimate(false);
+      setStep("otp");
     },
   });
 
@@ -73,6 +69,7 @@ const SignupCardForm = () => {
       email: formData.email,
       username: formData.username,
       password: formData.password!,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone ?? "UTC",
     });
   };
 

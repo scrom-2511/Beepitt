@@ -4,7 +4,6 @@ import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
 import { prisma } from '../../database/prismaClient';
-import { locationDetectorProducerSend } from '../../services/kafka/location_detector/producerLocationDetector';
 import { setOtp } from '../../services/redis/otpManager.redis';
 import { SignupType } from '../../types/dataTypes';
 import { ERROR_CODES, HttpStatus } from '../../types/errorCodes';
@@ -44,8 +43,7 @@ export const signupController = async (req: Request, res: Response) => {
 
     const newUser = await prisma.user.create({
       data: {
-        username: validateData.data.username,
-        email: validateData.data.email,
+        ...validateData.data,
         password: hashedPassword,
         identifierKey,
         subscription_tier: 'Free',
@@ -63,15 +61,6 @@ export const signupController = async (req: Request, res: Response) => {
     const emailAndIp = { email: validateData.data.email, ip };
 
     console.log('ip of user is: ', req.ip);
-
-    try {
-      await locationDetectorProducerSend({
-        key: newUser.id.toString(),
-        value: JSON.stringify(emailAndIp),
-      });
-    } catch (err) {
-      console.error('Kafka producer error:', err);
-    }
 
     const newOtp = crypto.randomInt(1000, 10000);
     console.log(newOtp);
